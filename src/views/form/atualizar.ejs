@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt">
+
+<head>
+    <%- include('../layout/head'); %>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <%- include('../layout/header'); %>
+        </header>
+
+        <div class="row">
+            <div class="col-12">
+                <form action="/form_atualizar" method="POST" enctype="multipart/form-data">
+                    <h4 class="mb-sm-0 font-size-18">Cadastro de Produtos E-Commerce</h4>
+                    <input type="hidden" name="id" value="<%=produtos[0].id %>">
+                    <div class="table-responsive" id="crudTableEdit">
+                        <table
+                            class="table table-hover table-striped table-condensed table-sm table-bordered table-nowrap align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="border border-light border-1 text-left">Campos</th>
+                                    <th class="border border-light border-1 text-left">Valores</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">D009_id</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" name="hrd_D009_Id"  value="<%=produtos[0].hrd_D009_Id %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Código Produto</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" name="product_code" value="<%=produtos[0].product_code %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Nome Produto</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" name="nome" value="<%=produtos[0].nome %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Custo</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="cost_unit" value="<%=produtos[0].cost_unit %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">IPV</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="ipv" value="<%=produtos[0].ipv %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Preço</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="price_unit" value="<%=produtos[0].price_unit %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Qtd Local</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="local_quantity" value="<%=produtos[0].local_quantity %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Qtd Reservada</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="reserved_quantity" value="<%=produtos[0].reserved_quantity %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Qtd Ec</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="actual_quantity" value="<%=produtos[0].actual_quantity %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Ativo</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="active" value="<%=produtos[0].active %>"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Imagem</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="file" name="foto" multiple value=""></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <footer>
+            <%- include('../layout/footer'); %>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="/js/home.js"></script>
+
+</html>

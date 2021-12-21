@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt">
+
+<head>
+  <%- include('../layout/head'); %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="">
+      <header>
+        <%- include('../layout/header'); %>
+      </header>
+    </div>
+    <% if (items.length> 0) { %>
+      <div class="row">
+        <% for(var i=0; i < items.length; i++) {%>
+          <div class="jumbotron col-8">
+            <%= items[i].name %>
+          </div>
+          <div class="jumbotron col-4">
+            <%= items[i].sku %>
+          </div>
+          <% } %>
+      </div>
+      <% } %>
+  </div>
+  <footer>
+    <%- include('../layout/footer'); %>
+  </footer>
+</body>
+
+</html>

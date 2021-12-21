@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt">
+
+<head>
+    <%- include('../layout/head'); %>
+        <% if (msg !='' ) { %>
+            <script>
+                let msg = '<%=msg %>'
+                alert(msg)
+            </script>
+            <% } %>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <%- include('../layout/header'); %>
+        </header>
+        <br /><br /><br />
+        <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body vh-100">
+                    <div class="row">
+                        <div class="col-sm-12 mb-3">
+                            <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
+                            <a href="/form"><i class="bi bi-clipboard-plus"></i></a>
+                        </div>
+                        <div class="table-responsive" id="crudTable">
+                            <table
+                                class="table table-hover table-condensed table-sm table-bordered table-nowrap align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="border border-light border-1 p-1">D009_Id</th>
+                                        <th class="border border-light border-1 p-1">Código Produto</th>
+                                        <th class="border border-light border-1 p-1">Nome Produto</th>
+                                        <th class="border border-light border-1 p-1">Custo</th>
+                                        <th class="border border-light border-1 p-1">IPV</th>
+                                        <th class="border border-light border-1 p-1">Preço</th>
+                                        <th class="border border-light border-1 p-1">Qtd Local</th>
+                                        <th class="border border-light border-1 p-1">Qtd Reservada</th>
+                                        <th class="border border-light border-1 p-1">Qtd Ec</th>
+                                        <th class="border border-light border-1 p-1">Ativo</th>
+                                        <th class="border border-light border-1 p-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(var i=0; i < produtos.length; i++) {%>
+                                        <tr>
+                                            <td class="p-1">
+                                                <%=produtos[i].hrd_D009_Id %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].product_code %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].nome %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].cost_unit %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].ipv %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].price_unit %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].local_quantity %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].reserved_quantity %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].actual_quantity %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=produtos[i].active %>
+                                            </td>
+                                            <td class="p-1">
+                                                <a href="/form_update/<%=produtos[i].id%>"><i
+                                                        class="bi bi-pencil-square"></i></a>
+                                                <a href="/delete/<%=produtos[i].id%>"><i
+                                                        class="bi bi-clipboard-x"></i></a>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <%- include('../layout/footer'); %>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="/js/home.js"></script>
+
+</html>
