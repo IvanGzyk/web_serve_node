@@ -74,7 +74,16 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Ativo</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="active" value="<%=produtos[0].active %>"></td>
+                                        <div class="custom-control custom-switch">
+                                            <% if (produtos[0].active == 'S'){ %>
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" name="active" checked>
+                                            <label class="custom-control-label" for="customSwitch1"></label>
+                                            <% }  else { %>
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1" name="active">
+                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                            <% } %>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Imagem</td>

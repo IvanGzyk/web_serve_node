@@ -24,6 +24,15 @@ const eco_db = mysql.createConnection({
     database: 'ecommercedb'
 });
 
+// conexão E003
+const hardness_db = mysql.createConnection({
+    host: '192.168.0.239',
+    user: 'hardness',
+    password: 'h@rdness!web',
+    database: 'E003'
+});
+
 module.exports.sequelize = sequelize;
 module.exports.connection = connection;
 module.exports.eco_db = eco_db;
+module.exports.hardness_db = hardness_db;

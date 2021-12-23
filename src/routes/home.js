@@ -22,7 +22,9 @@ module.exports = function (application) {
         }
     });
 
-    const upload = multer({ storage })
+    const upload = multer({storage : storage, limits: {
+        fileSize : 1024 * 1024 * 5 
+    }})
     
     application.get('/', function (req, res) {
         application.src.controllers.home.home(application, req, res)
@@ -49,6 +51,7 @@ module.exports = function (application) {
     })
 
     application.post('/form_atualizar', upload.array("foto", 10), (req, res) => {
+        //console.log(req)
         application.src.controllers.home.atualiza(req, res)
     })
 
