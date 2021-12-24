@@ -363,3 +363,7 @@ module.exports.cad_prod_mage = function (req, res) {
         })
     })
 }
+
+module.exports.atualiza_base = function (req, res){
+    ProdutoModel.atualizaBase(res)
+}

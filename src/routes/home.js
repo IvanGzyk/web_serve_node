@@ -62,4 +62,8 @@ module.exports = function (application) {
     application.get('/cadastra', function (req, res) {
         application.src.controllers.home.cad_prod_mage(req, res)
     })
+
+    application.get('/atualiza_base', function (req, res) {
+        application.src.controllers.home.atualiza_base(req, res)
+    })
 }

@@ -16,13 +16,19 @@
         <header>
             <%- include('../layout/header'); %>
         </header>
-        <br /><br /><br />
-        <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
+
+        <div class="title">
+            <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
+        </div>
+        
         <div class="col-lg-12">
             <div id="mostra" class="row" style="display: none;">
                 <div class="col-sm-12 mb-3">
-                    <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
-                    <a href="/form"><i class="bi bi-clipboard-plus"></i></a>
+                    <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
+                    <a class="btn btn-outline-primary" href="/atualiza_base">Atualiza Base de Dados</a>
+                    <a class="btn btn-outline-primary" href="/form">Novo</a>
+                    <!-- <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
+                    <a href="/form"><i class="bi bi-clipboard-plus"></i></a> -->
                 </div>
 
                 <div class="table-responsive" id="crudTable">
