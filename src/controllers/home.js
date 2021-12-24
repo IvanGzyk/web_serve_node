@@ -1,12 +1,9 @@
+const ProdutoModel = require('../models/produtos')
+
 module.exports.home = function (application, req, res) {
     const db_eco = require("../../config/db")
     bd = db_eco.eco_db
-    bd.query('SELECT * FROM product', function (err, rows, fields) {
-        res.render("home/home", {
-            msg: "",
-            produtos: rows
-        })
-    })
+    ProdutoModel.getProduto(res)
 }
 
 module.exports.testePost = function (req, res) {
@@ -74,51 +71,11 @@ module.exports.salva_form = function (req, res) {
             }
             if (x == req.files.length) {
                 img_json += `],`
-                //console.log(img_json)
                 const obj = JSON.parse(JSON.stringify(req.body))
-                try {
-                    bd.query(`INSERT INTO product(
-                        hrd_D009_Id, 
-                        product_code, 
-                        nome, 
-                        cost_unit, 
-                        ipv, 
-                        price_unit, 
-                        local_quantity, 
-                        reserved_quantity, 
-                        actual_quantity,
-                        img
-                    ) VALUES (
-                        ${obj.hrd_D009_Id}, 
-                        '${obj.product_code}',
-                        '${obj.nome}', 
-                        ${obj.cost_unit}, 
-                        ${obj.ipv}, 
-                        ${obj.price_unit}, 
-                        ${obj.local_quantity}, 
-                        ${obj.reserved_quantity}, 
-                        ${obj.actual_quantity},
-                        '${img_json}'
-                    );`)
-                    bd.query('SELECT * FROM product', function (err, rows, fields) {
-                        res.render("home/home", {
-                            msg: "Produto cadastrado com Sucesso!",
-                            produtos: rows
-                        })
-                    })
-                } catch (err) {
-                    bd.query('SELECT * FROM product', function (err, rows, fields) {
-                        res.render("home/home", {
-                            msg: `Erro ao tentar cadastrar! ERRO: ${err} `,
-                            produtos: rows
-                        })
-                    })
-                }
-
+                ProdutoModel.postProduto(res, obj, img_json)
             }
             x++
         }).catch((error) => { console.log(error) })
-        //console.log(img_json)
     })
     console.log(img_json)
 }
@@ -147,7 +104,6 @@ module.exports.atualiza = function (req, res) {
 
     if (obj.active) {
         aitvo = 'S'
-        //console.log('sim')
     }
     if (req.files.length != 0) {
 
@@ -200,41 +156,7 @@ module.exports.atualiza = function (req, res) {
                 }
                 if (x == req.files.length) {
                     img_json += `],`
-                    //console.log(img_json)
-                    const sql = `
-                    UPDATE product SET 
-                    hrd_D009_Id='${obj.hrd_D009_Id}', 
-                    product_code='${obj.product_code}',
-                    nome='${obj.nome}', 
-                    cost_unit='${obj.cost_unit}', 
-                    ipv='${obj.ipv}', 
-                    price_unit='${obj.price_unit}', 
-                    local_quantity='${obj.local_quantity}', 
-                    reserved_quantity='${obj.reserved_quantity}', 
-                    actual_quantity='${obj.actual_quantity}', 
-                    active='${aitvo}',
-                    img ='${img_json}' 
-                    WHERE  id=${obj.id};`
-
-                    try {
-                        bd.query(sql)
-
-                        bd.query('SELECT * FROM product', function (err, rows, fields) {
-                            res.render("home/home", {
-                                msg: "Produto atualizado!",
-                                produtos: rows
-                            })
-                        })
-
-                    } catch (err) {
-                        bd.query('SELECT * FROM product', function (err, rows, fields) {
-                            res.render("home/home", {
-                                msg: `Erro ao tentar Atualizar! ERRO: ${err}`,
-                                produtos: rows
-                            })
-                        })
-
-                    }
+                    ProdutoModel.putProduto(res, obj, img_json)
                 }
                 x++
             }).catch((error) => { console.log(error) })
@@ -243,60 +165,19 @@ module.exports.atualiza = function (req, res) {
 
     }
     else {
-        const sql = `
-            UPDATE product SET 
-            hrd_D009_Id='${obj.hrd_D009_Id}', 
-            product_code='${obj.product_code}',
-            nome='${obj.nome}', 
-            cost_unit='${obj.cost_unit}', 
-            ipv='${obj.ipv}', 
-            price_unit='${obj.price_unit}', 
-            local_quantity='${obj.local_quantity}', 
-            reserved_quantity='${obj.reserved_quantity}', 
-            actual_quantity='${obj.actual_quantity}', 
-            active='${aitvo}' 
-            WHERE  id=${obj.id};`
-
-        try {
-            bd.query(sql)
-
-            bd.query('SELECT * FROM product', function (err, rows, fields) {
-                res.render("home/home", {
-                    msg: "Produto atualizado!",
-                    produtos: rows
-                })
-            })
-
-        } catch (err) {
-            bd.query('SELECT * FROM product', function (err, rows, fields) {
-                res.render("home/home", {
-                    msg: `Erro ao tentar Atualizar! ERRO: ${err}`,
-                    produtos: rows
-                })
-            })
-
-        }
+        ProdutoModel.putProduto(res, obj)
     }
 }
 
 module.exports.apagar = function (req, res) {
     let params = req.params
-    const db_eco = require("../../config/db")
-    bd = db_eco.eco_db
-    bd.query(`DELETE FROM product where id = ${params.id}`)
-
-    bd.query('SELECT * FROM product', function (err, rows, fields) {
-        res.render("home/home", {
-            msg: "",
-            produtos: rows
-        })
-    })
+    ProdutoModel.deleteProduto(params.id)
+    ProdutoModel.getProduto(res, "Produto Deletado!")
 }
 
 module.exports.cad_prod_mage = function (req, res) {
-    const db_eco = require("../../config/db")
+    const bd = require("../../config/db").eco_db
     const prod_mag = require("../integracao/produtos")
-    bd = db_eco.eco_db
 
     let id_d009
     let sku
@@ -353,7 +234,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                     //console.log(data)
                                     //console.log(data.config)
                                 })
-                            }                             
+                            }
                         })
                     }
 
@@ -365,7 +246,6 @@ module.exports.cad_prod_mage = function (req, res) {
                     qty = element.actual_quantity
                     ativo = 1
                     img = element.img
-                    //console.log(img)
 
                     if (data.length != 0) {
                         data.forEach(cod_prod => {
@@ -433,10 +313,10 @@ module.exports.cad_prod_mage = function (req, res) {
                                 }]
                             }
                         }`
-                        prod_mag.postProduto(json).then(data => {
-                            //console.log(data.status)
-                            //console.log(data.config)
-                        })
+                                prod_mag.postProduto(json).then(data => {
+                                    //console.log(data.status)
+                                    //console.log(data.config)
+                                })
                             }
                         })
                     } else {

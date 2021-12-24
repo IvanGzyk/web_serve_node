@@ -2,6 +2,129 @@ const db = require("../../config/db").hardness_db
 const eco_db = require("../../config/db").eco_db
 const CronJob = require('cron').CronJob
 
+function postProduto(res, obj, img_json = '') {
+    if (img_json != '') {
+        try {
+            bd.query(`INSERT INTO product(
+                hrd_D009_Id, 
+                product_code, 
+                nome, 
+                cost_unit, 
+                ipv, 
+                price_unit, 
+                local_quantity, 
+                reserved_quantity, 
+                actual_quantity,
+                img
+            ) VALUES (
+                ${obj.hrd_D009_Id}, 
+                '${obj.product_code}',
+                '${obj.nome}', 
+                ${obj.cost_unit}, 
+                ${obj.ipv}, 
+                ${obj.price_unit}, 
+                ${obj.local_quantity}, 
+                ${obj.reserved_quantity}, 
+                ${obj.actual_quantity},
+                '${img_json}'
+            );`)
+            getProduto(res, "Produto cadastrado com Sucesso!")
+        } catch (err) {
+            getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
+        }
+    } else {
+        try {
+            bd.query(`INSERT INTO product(
+                hrd_D009_Id, 
+                product_code, 
+                nome, 
+                cost_unit, 
+                ipv, 
+                price_unit, 
+                local_quantity, 
+                reserved_quantity, 
+                actual_quantity
+            ) VALUES (
+                ${obj.hrd_D009_Id}, 
+                '${obj.product_code}',
+                '${obj.nome}', 
+                ${obj.cost_unit}, 
+                ${obj.ipv}, 
+                ${obj.price_unit}, 
+                ${obj.local_quantity}, 
+                ${obj.reserved_quantity}, 
+                ${obj.actual_quantity}
+            );`)
+            getProduto(res, "Produto cadastrado com Sucesso!")
+        } catch (err) {
+            getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
+        }
+    }
+}
+
+function putProduto(res, obj, img_json = '') {
+    aitvo = 'N'
+    if (obj.active) {
+        aitvo = 'S'
+    }
+    if (img_json != '') {
+        try {
+            eco_db.query(`
+            UPDATE product SET 
+            hrd_D009_Id='${obj.hrd_D009_Id}', 
+            product_code='${obj.product_code}',
+            nome='${obj.nome}', 
+            cost_unit='${obj.cost_unit}', 
+            ipv='${obj.ipv}', 
+            price_unit='${obj.price_unit}', 
+            local_quantity='${obj.local_quantity}', 
+            reserved_quantity='${obj.reserved_quantity}', 
+            actual_quantity='${obj.actual_quantity}', 
+            active='${aitvo}',
+            img ='${img_json}' 
+            WHERE  id=${obj.id};`)
+            getProduto(res, "Produto atualizado!")
+
+        } catch (err) {
+            getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+        }
+    } else {
+        try {
+            eco_db.query(`
+            UPDATE product SET 
+            hrd_D009_Id='${obj.hrd_D009_Id}', 
+            product_code='${obj.product_code}',
+            nome='${obj.nome}', 
+            cost_unit='${obj.cost_unit}', 
+            ipv='${obj.ipv}', 
+            price_unit='${obj.price_unit}', 
+            local_quantity='${obj.local_quantity}', 
+            reserved_quantity='${obj.reserved_quantity}', 
+            actual_quantity='${obj.actual_quantity}', 
+            active='${aitvo}' 
+            WHERE  id=${obj.id};`)
+            getProduto(res, "Produto atualizado!")
+
+        } catch (err) {
+            getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+        }
+    }
+
+}
+
+function getProduto(res, msg_ = '') {
+    eco_db.query('SELECT * FROM product', function (err, rows, fields) {
+        res.render("home/home", {
+            msg: msg_,
+            produtos: rows
+        })
+    })
+}
+
+function deleteProduto(id) {
+    eco_db.query(`DELETE FROM product where id = ${id}`)
+}
+
 /** Cadastra novos produtos */
 
 const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
@@ -65,3 +188,8 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 }, null, true, 'America/Sao_Paulo')
 
 /** Fim cadastro */
+
+module.exports.postProduto = postProduto
+module.exports.putProduto = putProduto
+module.exports.getProduto = getProduto
+module.exports.deleteProduto = deleteProduto
