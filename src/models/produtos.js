@@ -114,7 +114,7 @@ function putProduto(res, obj, img_json = '') {
 
 function getProduto(res, msg_ = '') {
     eco_db.query('SELECT * FROM product', function (err, rows, fields) {
-        res.render("home/home", {
+        res.render("produtos/produtos", {
             msg: msg_,
             produtos: rows
         })
@@ -240,7 +240,7 @@ function atualizaBase(res) {
                 }
             })
             eco_db.query('SELECT * FROM product', function (err, rows, fields) {
-                res.render("home/home", {
+                res.render("produtos/produtos", {
                     msg: "Base de dados Atualizada!",
                     produtos: rows
                 })

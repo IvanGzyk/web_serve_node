@@ -7,23 +7,33 @@
 
 <body>
   <div class="container">
-    <div class="">
-      <header>
-        <%- include('../layout/header'); %>
-      </header>
+    <header>
+      <%- include('../layout/header'); %>
+    </header>
+
+    <div class="title">
+      <h4 class="mb-sm-0 font-size-18">E-commerce</h4>
     </div>
-    <% if (items.length> 0) { %>
-      <div class="row">
-        <% for(var i=0; i < items.length; i++) {%>
-          <div class="jumbotron col-8">
-            <%= items[i].name %>
-          </div>
-          <div class="jumbotron col-4">
-            <%= items[i].sku %>
-          </div>
-          <% } %>
-      </div>
-      <% } %>
+
+    <div class="row">
+      <%- include('../layout/menu'); %>
+
+        <main class="col conteudo">
+          <% if (items.length> 0) { %>
+            <div class="row">
+              <% for(var i=0; i < items.length; i++) {%>
+                <div class="jumbotron col-8">
+                  <%= items[i].name %>
+                </div>
+                <div class="jumbotron col-4">
+                  <%= items[i].sku %>
+                </div>
+                <% } %>
+            </div>
+            <% } %>
+        </main>
+
+    </div>
   </div>
   <footer>
     <%- include('../layout/footer'); %>
