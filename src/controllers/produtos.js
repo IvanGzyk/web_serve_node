@@ -236,7 +236,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                     }
                                 }`
                                 prod_mag.putProduto(sku, json).then(data => {
-                                    //console.log(data)
+                                    console.log(data)
                                     //console.log(data.config)
                                 })
                             }
@@ -286,7 +286,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                     }
                                 }`
                                 prod_mag.putProduto(sku, json).then(data => {
-                                    //console.log(data)
+                                    console.log(data)
                                     //console.log(data.config)
                                 })
                             } else {
@@ -320,7 +320,7 @@ module.exports.cad_prod_mage = function (req, res) {
                             }
                         }`
                                 prod_mag.postProduto(json).then(data => {
-                                    //console.log(data.status)
+                                    console.log(data)
                                     //console.log(data.config)
                                 })
                             }
@@ -356,7 +356,7 @@ module.exports.cad_prod_mage = function (req, res) {
                             }
                         }`
                         prod_mag.postProduto(json).then(data => {
-                            //console.log(data.status)
+                            console.log(data)
                             //console.log(data.config)
                         })
                     }

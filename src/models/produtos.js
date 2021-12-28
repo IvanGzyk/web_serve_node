@@ -32,6 +32,7 @@ function postProduto(res, obj, img_json = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
+            console.log(err)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     } else {
@@ -61,6 +62,7 @@ function postProduto(res, obj, img_json = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
+            console.log(err)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     }
@@ -91,6 +93,7 @@ function putProduto(res, obj, img_json = '') {
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
+            console.log(err)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     } else {
@@ -112,6 +115,7 @@ function putProduto(res, obj, img_json = '') {
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
+            console.log(err)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
