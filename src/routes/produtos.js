@@ -30,10 +30,6 @@ module.exports = function (application) {
         application.src.controllers.produtos.produtos(application, req, res)
     })
 
-    application.post('/', function (req, res) {
-        application.src.controllers.produtos.testePost(req, res)
-    })
-
     application.get('/form', function (req, res) {
         application.src.controllers.produtos.novo(req, res)
     })

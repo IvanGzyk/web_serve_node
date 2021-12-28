@@ -15,6 +15,7 @@ function postProduto(res, obj, img_json = '') {
                 local_quantity, 
                 reserved_quantity, 
                 actual_quantity,
+                categories_id,
                 img
             ) VALUES (
                 ${obj.hrd_D009_Id}, 
@@ -26,6 +27,7 @@ function postProduto(res, obj, img_json = '') {
                 ${obj.local_quantity}, 
                 ${obj.reserved_quantity}, 
                 ${obj.actual_quantity},
+                ${obj.categ},
                 '${img_json}'
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
@@ -43,7 +45,8 @@ function postProduto(res, obj, img_json = '') {
                 price_unit, 
                 local_quantity, 
                 reserved_quantity, 
-                actual_quantity
+                actual_quantity,
+                categories_id
             ) VALUES (
                 ${obj.hrd_D009_Id}, 
                 '${obj.product_code}',
@@ -53,7 +56,8 @@ function postProduto(res, obj, img_json = '') {
                 ${obj.price_unit}, 
                 ${obj.local_quantity}, 
                 ${obj.reserved_quantity}, 
-                ${obj.actual_quantity}
+                ${obj.actual_quantity}, 
+                ${obj.categ}
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
@@ -80,7 +84,8 @@ function putProduto(res, obj, img_json = '') {
             local_quantity='${obj.local_quantity}', 
             reserved_quantity='${obj.reserved_quantity}', 
             actual_quantity='${obj.actual_quantity}', 
-            active='${aitvo}',
+            active='${aitvo}',            
+            categories_id=${obj.categ},
             img ='${img_json}' 
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
@@ -101,7 +106,8 @@ function putProduto(res, obj, img_json = '') {
             local_quantity='${obj.local_quantity}', 
             reserved_quantity='${obj.reserved_quantity}', 
             actual_quantity='${obj.actual_quantity}', 
-            active='${aitvo}' 
+            active='${aitvo}',  
+            categories_id=${obj.categ}
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
 

@@ -1,4 +1,5 @@
 const ProdutoModel = require('../models/produtos')
+const Categorias = require('../integracao/categorias')
 
 module.exports.produtos = function (application, req, res) {
     const db_eco = require("../../config/db")
@@ -7,7 +8,11 @@ module.exports.produtos = function (application, req, res) {
 }
 
 module.exports.novo = function (req, res) {
-    res.render("form/cadastro_produto")
+    Categorias.getCategorias()
+        .then(dados => dados.data)
+        .then(dados => {
+            res.render("form/cadastro_produto", { categorias: dados.children_data })
+        })
 }
 
 module.exports.salva_form = function (req, res) {
@@ -76,12 +81,16 @@ module.exports.salva_form = function (req, res) {
 }
 
 module.exports.form_atualiza = function (req, res) {
-    let params = req.params
-    const db_eco = require("../../config/db")
-    bd = db_eco.eco_db
-    bd.query('SELECT * FROM product where id = ' + params.id, function (err, rows, fields) {
-        res.render("form/atualizar", { produtos: rows })
-    })
+    Categorias.getCategorias()
+        .then(dados => dados.data)
+        .then(dados => {
+            let params = req.params
+            const db_eco = require("../../config/db")
+            bd = db_eco.eco_db
+            bd.query('SELECT * FROM product where id = ' + params.id, function (err, rows, fields) {
+                res.render("form/atualizar", { produtos: rows, categorias: dados.children_data })
+            })
+        })
 }
 
 module.exports.atualiza = function (req, res) {
@@ -179,7 +188,7 @@ module.exports.cad_prod_mage = function (req, res) {
     let name
     let price
     let qty
-    let ativo
+    let category
     let img
 
     bd.query('SELECT * FROM product', function (err, rows, fields) {
@@ -193,6 +202,7 @@ module.exports.cad_prod_mage = function (req, res) {
                     name = element.nome
                     price = element.price_unit
                     qty = element.actual_quantity
+                    category = element.categories_id
                     ativo = 0
                     if (data.length != 0) {
                         data.forEach(cod_prod => {
@@ -211,7 +221,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                             "category_links": [
                                                 {
                                                     "position": 0,
-                                                    "category_id": "5"
+                                                    "category_id": "${category}"
                                                 }
                                             ],
                                             "stock_item":{
@@ -239,6 +249,7 @@ module.exports.cad_prod_mage = function (req, res) {
                     name = element.nome
                     price = element.price_unit
                     qty = element.actual_quantity
+                    category = element.categories_id
                     ativo = 1
                     img = element.img
 
@@ -259,7 +270,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                             "category_links": [
                                                 {
                                                     "position": 0,
-                                                    "category_id": "5"
+                                                    "category_id": "${category}"
                                                 }
                                             ],
                                             "stock_item":{
@@ -293,7 +304,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                     "category_links": [
                                         {
                                             "position": 0,
-                                            "category_id": "5"
+                                            "category_id": "${category}"
                                         }
                                     ],
                                     "stock_item":{
@@ -329,7 +340,7 @@ module.exports.cad_prod_mage = function (req, res) {
                                     "category_links": [
                                         {
                                             "position": 0,
-                                            "category_id": "5"
+                                            "category_id": "${category}"
                                         }
                                     ],
                                     "stock_item":{
@@ -359,6 +370,6 @@ module.exports.cad_prod_mage = function (req, res) {
     })
 }
 
-module.exports.atualiza_base = function (req, res){
+module.exports.atualiza_base = function (req, res) {
     ProdutoModel.atualizaBase(res)
 }

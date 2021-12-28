@@ -28,52 +28,81 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">D009_id</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" name="hrd_D009_Id"  value=""></td>
+                                        <input class="form-control form-control-sm" type="text" name="hrd_D009_Id"
+                                            value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Código Produto</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" name="product_code" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" name="product_code"
+                                            value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Nome Produto</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" name="nome" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" name="nome" value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Custo</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="cost_unit" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00"
+                                            name="cost_unit" value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">IPV</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="ipv" value="1.50"></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00"
+                                            name="ipv" value="1.50">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Preço</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="price_unit" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="0.00"
+                                            name="price_unit" value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Local</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="local_quantity" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="00"
+                                            name="local_quantity" value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Reservada</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="reserved_quantity" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="00"
+                                            name="reserved_quantity" value="">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Ec</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="actual_quantity" value=""></td>
+                                        <input class="form-control form-control-sm" type="text" placeholder="00"
+                                            name="actual_quantity" value="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Categorias</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <select class="form-control" name="categ" <!--multiple-->>
+                                            <% categorias.forEach(element=> { %>
+                                                <option value="<%= element.id %>"><%= element.name %></option>
+                                                <% }) %>
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Imagem</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input required class="form-control form-control-sm" type="file" name="foto" multiple value=""></td>
+                                        <input required class="form-control form-control-sm" type="file" name="foto"
+                                            multiple value="">
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
