@@ -29,12 +29,12 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">D009_id</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" name="hrd_D009_Id"  value="<%=produtos[0].hrd_D009_Id %>"></td>
+                                        <input class="form-control form-control-sm" type="text" name="hrd_D009_Id"  value="<%=produtos[0].hrd_D009_Id %>" disabled></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Código Produto</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" name="product_code" value="<%=produtos[0].product_code %>"></td>
+                                        <input class="form-control form-control-sm" type="text" name="product_code" value="<%=produtos[0].product_code %>" disabled></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Nome Produto</td>
@@ -44,32 +44,32 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Custo</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="cost_unit" value="<%=produtos[0].cost_unit %>"></td>
+                                        <input class="form-control form-control-sm" id="custo" type="text" placeholder="0.00" name="cost_unit" value="<%=produtos[0].cost_unit %>"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">IPV</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="ipv" value="<%=produtos[0].ipv %>"></td>
+                                        <input class="form-control form-control-sm" id="ipv" type="text" placeholder="0.00" name="ipv" value="<%=produtos[0].ipv %>"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Preço</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="0.00" name="price_unit" value="<%=produtos[0].price_unit %>"></td>
+                                        <input class="form-control form-control-sm" id="preco" type="text" placeholder="0.00" name="price_unit" value="<%=produtos[0].price_unit %>" disabled></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Local</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="local_quantity" value="<%=produtos[0].local_quantity %>"></td>
+                                        <input class="form-control form-control-sm" id="estoque" type="text" placeholder="00" name="local_quantity" value="<%=produtos[0].local_quantity %>"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Reservada</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="reserved_quantity" value="<%=produtos[0].reserved_quantity %>"></td>
+                                        <input class="form-control form-control-sm" id="reservada" type="text" placeholder="00" name="reserved_quantity" value="<%=produtos[0].reserved_quantity %>"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Qtd Ec</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="text" placeholder="00" name="actual_quantity" value="<%=produtos[0].actual_quantity %>"></td>
+                                        <input class="form-control form-control-sm" id="qtd_ec" type="text" placeholder="00" name="actual_quantity" value="<%=produtos[0].actual_quantity %>" disabled></td>
                                 </tr>
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Ativo</td>
@@ -114,6 +114,5 @@
         </footer>
     </div>
 </body>
-<script type="text/javascript" src="/js/home.js"></script>
-
+<script type="text/javascript" src="/js/form_prod.js"></script>
 </html>

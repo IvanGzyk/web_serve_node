@@ -156,7 +156,7 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
             AND D1.D001_Data_Cadastro != '000-00-00'
             AND D009_Custo(D009_Id, 3) > 0
             AND D009_Quantidade_Estoque > 0
-        GROUP BY D1.D001_Codigo_Produto
+        GROUP BY D009_Id
         ORDER BY D009_Quantidade_Estoque DESC
         `, function (err, rows, fields) {
             rows.forEach(element => {
@@ -215,7 +215,7 @@ function atualizaBase(res) {
             AND D1.D001_Data_Cadastro != '000-00-00'
             AND D009_Custo(D009_Id, 3) > 0
             AND D009_Quantidade_Estoque > 0
-        GROUP BY D1.D001_Codigo_Produto
+        GROUP BY D009_Id
         ORDER BY D009_Quantidade_Estoque DESC
         `, function (err, rows, fields) {
             rows.forEach(element => {
