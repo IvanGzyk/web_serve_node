@@ -1,3 +1,5 @@
 /node_modules
 /public/img/upload
 /.git.old
+/nohup.out
+/output.log
