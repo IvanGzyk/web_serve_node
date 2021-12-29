@@ -5,7 +5,7 @@ const CronJob = require('cron').CronJob
 function postProduto(res, obj, img_json = '') {
     if (img_json != '') {
         try {
-            bd.query(`INSERT INTO product(
+            eco_db.query(`INSERT INTO product(
                 hrd_D009_Id, 
                 product_code, 
                 nome, 
@@ -37,7 +37,7 @@ function postProduto(res, obj, img_json = '') {
         }
     } else {
         try {
-            bd.query(`INSERT INTO product(
+            eco_db.query(`INSERT INTO product(
                 hrd_D009_Id, 
                 product_code, 
                 nome, 

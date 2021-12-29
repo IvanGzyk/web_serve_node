@@ -1,15 +1,14 @@
+const itemsModel = require("../models/items")
+
 module.exports.home = function (application, req, res) {
-  const itemsModel = require("../models/items")
   itemsModel.getItems().then(dados => res.render("items/index", { items: dados }))
 }
 
 module.exports.busca_item = function(application, req, res){
-  const itemsModel = require("../models/items")
-  itemsModel.getItem([req.params.item_id]).then(dados => redirecionaItem(dados, res))//.then(dados => res.render("items/item", { items: dados }))
+  itemsModel.getItem([req.params.item_id]).then(dados => redirecionaItem(dados, res))
 }
 
 module.exports.busca_todos = function (application, req, res) {
-  const itemsModel = require("../models/items")
   itemsModel.getItems().then(dados => {return res.send(dados)})
 }
 
