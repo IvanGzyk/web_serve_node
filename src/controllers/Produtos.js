@@ -186,6 +186,7 @@ class Produtos {
         let qty
         let category
         let img
+        let ativo
     
         bd.query('SELECT * FROM product', function (err, rows, fields) {
             var json

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('../layout/head'); %>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <%- include('../layout/header'); %>
+        </header>
+
+        <div class="title">
+            <h4 class="mb-sm-0 font-size-18">E-commerce</h4>
+        </div>
+
+        <div class="row">
+
+            <%- include('../layout/menu'); %>
+                <div class="col conteudo">
+                    <div id="mostra" class="row" style="display: none;">
+                        <!-- <div class="col-sm-12 mb-3">
+                            <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
+                            <a class="btn btn-outline-primary" href="/atualiza_base">Atualiza Base de Dados</a>
+                            <a class="btn btn-outline-primary" href="/form">Novo</a>
+                        </div> -->
+
+                        <div class="table-responsive" id="crudTable">
+                            <table id="Dt_tabela" class="table table-striped table-bordered" style="width:100%">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="border border-light border-1 p-1">Criado</th>
+                                        <th class="border border-light border-1 p-1">Produto</th>
+                                        <th class="border border-light border-1 p-1">sku</th>
+                                        <th class="border border-light border-1 p-1">Qtd Cancelada</th>
+                                        <th class="border border-light border-1 p-1">Qtd Faturada</th>
+                                        <th class="border border-light border-1 p-1">Qtd Pedida</th>
+                                        <th class="border border-light border-1 p-1">Qtd Reembolsada</th>
+                                        <th class="border border-light border-1 p-1">Qtd Enviada</th>
+                                        <th class="border border-light border-1 p-1">Faturada</th>
+                                        <th class="border border-light border-1 p-1">Total</th>
+                                        <th class="border border-light border-1 p-1">Total Incl Impostos</th>
+                                        <th class="border border-light border-1 p-1">Atualizado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% pedidos.forEach(element=> { %>
+                                        <tr>
+                                            <td class="p-1">
+                                                <%=element.created_at %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.name %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.sku %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.qty_canceled %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.qty_invoiced %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.qty_ordered %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.qty_refunded %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.qty_shipped %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.row_invoiced %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.row_total %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.row_total_incl_tax %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.updated_at %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <footer>
+        <%- include('../layout/footer'); %>
+    </footer>
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('#Dt_tabela').DataTable()
+        document.querySelector('#mostra').style.display = "block"
+    })
+
+</script>
+
+</html>

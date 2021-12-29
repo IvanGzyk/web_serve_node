@@ -81,8 +81,8 @@ function getDados(dados) {
     return dados
 }
 
-/*setInterval(function () {
+setInterval(function () {
     getOrders().then(data => data.data).then(dados => getDados(dados))
 }, 90000)
-*/
+
 /** 900000 = 15 minutos**/
