@@ -33,14 +33,12 @@
                                         <th class="border border-light border-1 p-1">Criado</th>
                                         <th class="border border-light border-1 p-1">Produto</th>
                                         <th class="border border-light border-1 p-1">sku</th>
-                                        <th class="border border-light border-1 p-1">Qtd Cancelada</th>
-                                        <th class="border border-light border-1 p-1">Qtd Faturada</th>
-                                        <th class="border border-light border-1 p-1">Qtd Pedida</th>
-                                        <th class="border border-light border-1 p-1">Qtd Reembolsada</th>
-                                        <th class="border border-light border-1 p-1">Qtd Enviada</th>
+                                        <th class="border border-light border-1 p-1">Qtd Canc</th>
+                                        <th class="border border-light border-1 p-1">Qtd Fatu</th>
+                                        <th class="border border-light border-1 p-1">Enviada</th>
                                         <th class="border border-light border-1 p-1">Faturada</th>
                                         <th class="border border-light border-1 p-1">Total</th>
-                                        <th class="border border-light border-1 p-1">Total Incl Impostos</th>
+                                        <th class="border border-light border-1 p-1">Total + Impostos</th>
                                         <th class="border border-light border-1 p-1">Atualizado</th>
                                     </tr>
                                 </thead>
@@ -61,12 +59,6 @@
                                             </td>
                                             <td class="p-1">
                                                 <%=element.qty_invoiced %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.qty_ordered %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.qty_refunded %>
                                             </td>
                                             <td class="p-1">
                                                 <%=element.qty_shipped %>
