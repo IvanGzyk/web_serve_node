@@ -39,5 +39,14 @@ const putProduto = async function (sku, json) {
     }
 }
 
+const deleteProduto = async function (sku) {
+    try {
+        let dados = await client.delete(`products/${sku}`)
+        return dados
+    } catch (err) {
+        console.log(err.response.data)
+    }
+}
 
-module.exports = { client, getProdutos, getProduto, postProduto, putProduto }
+
+module.exports = { client, getProdutos, getProduto, postProduto, putProduto, deleteProduto}

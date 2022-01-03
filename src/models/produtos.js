@@ -28,7 +28,7 @@ function postProduto(res, obj, img_json = '') {
                 ${obj.reserved_quantity}, 
                 ${obj.actual_quantity},
                 ${obj.categ},
-                '${img_json}'
+                ${img_json}
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
@@ -74,6 +74,21 @@ function putProduto(res, obj, img_json = '') {
         aitvo = 'S'
     }
     if (img_json != '') {
+        console.log(`
+        UPDATE product SET 
+        hrd_D009_Id='${obj.hrd_D009_Id}', 
+        product_code='${obj.product_code}',
+        nome='${obj.nome}', 
+        cost_unit='${obj.cost_unit}', 
+        ipv='${obj.ipv}', 
+        price_unit='${obj.price_unit}', 
+        local_quantity='${obj.local_quantity}', 
+        reserved_quantity='${obj.reserved_quantity}', 
+        actual_quantity='${obj.actual_quantity}', 
+        active='${aitvo}',            
+        categories_id=${obj.categ},
+        img = ${img_json}
+        WHERE  id=${obj.id};`)
         try {
             eco_db.query(`
             UPDATE product SET 
@@ -88,7 +103,7 @@ function putProduto(res, obj, img_json = '') {
             actual_quantity='${obj.actual_quantity}', 
             active='${aitvo}',            
             categories_id=${obj.categ},
-            img ='${img_json}' 
+            img = ${img_json}
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
 

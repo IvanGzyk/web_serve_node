@@ -29,9 +29,10 @@ class Produtos {
             console.log(element)
             var base64str = this.base64_encode(element.path)
                 if (x == 1) {
-                    img_json = `
+                    img_json = `'
                     "media_gallery_entries": [
                         {
+                            "id": null,
                             "mediaType":"image",
                             "label":"Foto",
                             "position": ${x},
@@ -41,18 +42,16 @@ class Produtos {
                                 "small_image",
                                 "thumbnail"
                             ],
-                            "file":null,
                             "content":{
                                 "Base64EncodedData":"${base64str}",
                                 "Type":"${element.mimetype}",
                                 "Name":"${element.originalname}"
                             }
-                        }
-                    ],
-                    "media_gallery_entries": [`
+                        },`
                 } else {
                     img_json += `
                         {
+                            "id": null,
                             "mediaType":"image",
                             "label":"Foto${x}",
                             "position": ${x},
@@ -62,7 +61,6 @@ class Produtos {
                                 "small_image",
                                 "thumbnail"
                             ],
-                            "file":null,
                             "content":{
                                 "Base64EncodedData":"${base64str}",
                                 "Type":"${element.mimetype}",
@@ -74,7 +72,7 @@ class Produtos {
                     }
                 }
                 if (x == req.files.length) {
-                    img_json += `],`
+                    img_json += `],'`
                     const obj = JSON.parse(JSON.stringify(req.body))
                     ProdutoModel.postProduto(res, obj, img_json)
                 }
@@ -113,9 +111,10 @@ class Produtos {
             console.log(element)
                 var base64str = this.base64_encode(element.path)
                     if (x == 1) {
-                        img_json = `
+                        img_json = `'
                         "media_gallery_entries": [
                             {
+                                "id": null,
                                 "mediaType":"image",
                                 "label":"Foto",
                                 "position": ${x},
@@ -125,18 +124,16 @@ class Produtos {
                                     "small_image",
                                     "thumbnail"
                                 ],
-                                "file":null,
                                 "content":{
                                     "Base64EncodedData":"${base64str}",
                                     "Type":"${element.mimetype}",
                                     "Name":"${element.originalname}"
                                 }
-                            }
-                        ],
-                        "media_gallery_entries": [`
+                            },`
                     } else {
                         img_json += `
                             {
+                                "id": null,
                                 "mediaType":"image",
                                 "label":"Foto${x}",
                                 "position": ${x},
@@ -146,7 +143,6 @@ class Produtos {
                                     "small_image",
                                     "thumbnail"
                                 ],
-                                "file":null,
                                 "content":{
                                     "Base64EncodedData":"${base64str}",
                                     "Type":"${element.mimetype}",
@@ -158,7 +154,7 @@ class Produtos {
                         }
                     }
                     if (x == req.files.length) {
-                        img_json += `],`
+                        img_json += `],'`
                         ProdutoModel.putProduto(res, obj, img_json)
                     }
                     x++
@@ -191,7 +187,8 @@ class Produtos {
         bd.query('SELECT * FROM product', function (err, rows, fields) {
             var json
             prod_mag.getProdutos().then(data => data.data).then(data => data.items).then(data => {
-    
+                var qtd_mage = data.length
+                console.log(qtd_mage)
                 rows.forEach(element => {
                     if (element.active == 'N') {
                         id_d009 = element.hrd_D009_Id
@@ -201,9 +198,10 @@ class Produtos {
                         qty = element.actual_quantity
                         category = element.categories_id
                         ativo = 0
-                        if (data.length != 0) {
+                        if (qtd_mage != 0) {
                             data.forEach(cod_prod => {
                                 if (cod_prod.sku == element.product_code) {
+                                    
                                     json = `
                                     {
                                         "product":{
@@ -232,8 +230,11 @@ class Produtos {
                                             }]
                                         }
                                     }`
-                                    prod_mag.putProduto(sku, json).then(data => {
-                                        console.log(data)
+                                    prod_mag.deleteProduto(sku).then(ret => {                                        
+                                        console.log(ret)
+                                        // prod_mag.postProduto(/*sku,*/ json).then(data => {
+                                        //     console.log(data)
+                                        // })
                                     })
                                 }
                             })
@@ -249,7 +250,7 @@ class Produtos {
                         ativo = 1
                         img = element.img
     
-                        if (data.length != 0) {
+                        if (qtd_mage != 0) {
                             data.forEach(cod_prod => {
                                 if (cod_prod.sku == element.product_code) {
                                     json = `
@@ -281,39 +282,43 @@ class Produtos {
                                             }]
                                         }
                                     }`
-                                    prod_mag.putProduto(sku, json).then(data => {
-                                        console.log(data)
+                                    
+                                    prod_mag.deleteProduto(sku).then(ret => {
+                                        prod_mag.postProduto(/*sku,*/ json).then(data => {
+                                             console.log(data)
+                                         })
                                     })
-                                } else {
+                                } 
+                                else {
                                     json = `
-                            {
-                                "product":{
-                                    "sku":"${sku}",
-                                    "name":"${name}",
-                                    "price":${price},
-                                    "status":${ativo},
-                                    "type_id":"simple",
-                                    "attribute_set_id":4,
-                                    "weight":1,
-                                    "extension_attributes":{
-                                        "category_links": [
-                                            {
-                                                "position": 0,
-                                                "category_id": "${category}"
+                                        {
+                                            "product":{
+                                                "sku":"${sku}",
+                                                "name":"${name}",
+                                                "price":${price},
+                                                "status":${ativo},
+                                                "type_id":"simple",
+                                                "attribute_set_id":4,
+                                                "weight":1,
+                                                "extension_attributes":{
+                                                    "category_links": [
+                                                        {
+                                                            "position": 0,
+                                                            "category_id": "${category}"
+                                                        }
+                                                    ],
+                                                    "stock_item":{
+                                                        "qty":${qty},
+                                                        "is_in_stock":true
+                                                    }
+                                                },
+                                                ${img}
+                                                "custom_attributes": [{
+                                                    "attribute_code": "id_d009",
+                                                    "value": "${id_d009}"
+                                                }]
                                             }
-                                        ],
-                                        "stock_item":{
-                                            "qty":${qty},
-                                            "is_in_stock":true
-                                        }
-                                    },
-                                    ${img}
-                                    "custom_attributes": [{
-                                        "attribute_code": "id_d009",
-                                        "value": "${id_d009}"
-                                    }]
-                                }
-                            }`
+                                        }`
                                     prod_mag.postProduto(json).then(data => {
                                         console.log(data)
                                     })
@@ -351,6 +356,7 @@ class Produtos {
                             }`
                             prod_mag.postProduto(json).then(data => {
                                 console.log(data)
+                                qtd_mage++
                             })
                         }
                     }
