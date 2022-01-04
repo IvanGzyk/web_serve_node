@@ -24,13 +24,21 @@ const eco_db = mysql.createConnection({
     database: 'ecommercedb'
 });
 
- //conexão E003
- const hardness_db = mysql.createConnection({
-     host: '192.168.0.239',
-     user: 'hardness',
-     password: 'h@rdness!web',
-     database: 'E003'
- });
+//conexão E003
+const hardness_db = mysql.createConnection({
+    host: '192.168.0.239',
+    user: 'hardness',
+    password: 'h@rdness!web',
+    database: 'E003'
+});
+setInterval(function () {
+    connection.query('SELECT 1')
+    eco_db.query('SELECT 1')
+    hardness_db.query('SELECT 1')
+    console.log('Conectado!')
+}, 5000)
+
+
 
 module.exports.sequelize = sequelize;
 module.exports.connection = connection;

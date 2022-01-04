@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-br">
 
 <head>
     <%- include('../layout/head'); %>
@@ -13,18 +13,26 @@
 
 <body>
     <div class="container">
-        <header>
-            <%- include('../layout/header'); %>
-        </header>
+        <div class="row">
 
-        <div class="title">
-            <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
+            <div class="col-12 col-md-12">
+                <header>
+                    <%- include('../layout/header'); %>
+                </header>
+            </div>
+
+            <div class="title col-12 col-md-12">
+                <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
+            </div>
+
         </div>
 
         <div class="row">
-
-            <%- include('../layout/menu'); %>
-            <div class="col conteudo">
+            <div class="col-12 col-md-2">
+                <%- include('../layout/menu'); %>
+            </div>
+            <main class="col-12 col-md-10">
+                <div class="col conteudo">
                     <div id="mostra" class="row" style="display: none;">
                         <div class="col-sm-12 mb-3">
                             <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
@@ -94,7 +102,8 @@
                             </table>
                         </div>
                     </div>
-            </div>
+                </div>
+            </main>
         </div>
     </div>
     <footer>

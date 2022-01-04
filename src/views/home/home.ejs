@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-br">
 
 <head>
     <%- include('../layout/head'); %>
@@ -9,22 +9,29 @@
     <div class="container">
         <div class="row">
 
-            <header class="col-12"> 
-                <%- include('../layout/header'); %>
-            </header>
+            <div class="col-12 col-md-12">
+                <header>
+                    <%- include('../layout/header'); %>
+                </header>
+            </div>
 
-            <div class="title col-12">
+            <div class="title col-12 col-md-12">
                 <h4 class="mb-sm-0 font-size-18">E-commerce</h4>
             </div>
 
         </div>
 
         <div class="row">
-            <%- include('../layout/menu'); %>
+            <div class="col-12 col-md-2">
+                <%- include('../layout/menu'); %>
+            </div>
 
+            <div class="col-12 col-md-10">
                 <main class="col conteudo">
                     Conteudo!!!
                 </main>
+            </div>
+            
         </div>
     </div>
 
