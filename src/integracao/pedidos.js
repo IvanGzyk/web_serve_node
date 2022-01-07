@@ -2,16 +2,18 @@ const mage = require("../../config/conexao_mage")
 const Adress = require("../models/address")
 const Items = require("../models/items")
 const Payment = require("../models/payment")
+const CronJob = require('cron').CronJob
+
 
 const client = mage.client
 
+async function getOrders(params) {
 
-async function getOrders() {
     try {
-        let dados = client.get('orders')
+        let dados = client.get('orders', params)
         return dados
     } catch (err) {
-
+        console.log(err.response.data.message)
     }
 }
 
@@ -38,7 +40,7 @@ async function getPag(id) {
         let dados = Payment.getPayment(id)
         return dados
     } catch (err) {
-        console.log(err)
+        //console.log(err)
     }
 }
 
@@ -81,8 +83,27 @@ function getDados(dados) {
     return dados
 }
 
-setInterval(function () {
-    getOrders().then(data => data.data).then(dados => getDados(dados))
-}, 90000)
+const job = new CronJob('0 */15 * * * *', () => {
 
-/** 900000 = 15 minutos**/
+    var data = new Date()
+    var dia = String(data.getDate()).padStart(2, '0')
+    var mes = String(data.getMonth() + 1).padStart(2, '0')
+    var ano = data.getFullYear()
+    var hora = String(data.getHours()).padStart(2, '0')
+    var minuto = String(data.getMinutes()).padStart(2, '0')
+    var minuto_inicio = String(data.getMinutes() - 15).padStart(2, '0')
+    var segundos = String(data.getSeconds()).padStart(2, '0')
+    data_atual = ano+'-'+mes+'-'+dia+' '+hora+':'+minuto+':'+segundos
+    data_inicio = ano+'-'+mes+'-'+dia+' '+hora+':'+minuto_inicio+':'+segundos
+
+    let params = {
+        $from: data_inicio,
+        $to: data_atual,
+        $sort: {
+            "created_at": "desc"
+        },
+        $perPage: 200,
+        $page: 1
+    }
+    getOrders(params).then(data => data.data).then(dados => getDados(dados))
+},  null, true, 'America/Sao_Paulo')

@@ -23,41 +23,37 @@ module.exports = function (application) {
     
     application.get('/produtos', function (req, res) {
         produto.produtos(application, req, res)
-        //application.src.controllers.produtos.produtos(application, req, res)
     })
 
     application.get('/form', function (req, res) {
         produto.novo(req, res)
-        //application.src.controllers.produtos.novo(req, res)
     })
 
     application.post('/salva_form', upload.array("foto", 10), (req, res) => {
         produto.salva_form(req, res)
-        //application.src.controllers.produtos.salva_form(req, res)
     })
 
     application.get('/form_update/:id', function (req, res) {
         produto.form_atualiza(req, res)
-        //application.src.controllers.produtos.form_atualiza(req, res)
     })
 
     application.post('/form_atualizar', upload.array("foto", 10), (req, res) => {
         produto.atualiza(req, res)
-        //application.src.controllers.produtos.atualiza(req, res)
     })
 
     application.get('/delete/:id', function (req, res) {
         produto.apagar(req, res)
-        //application.src.controllers.produtos.apagar(req, res)
     })
 
     application.get('/cadastra', function (req, res) {
-        produto.cad_prod_mage(req, res)
-        //application.src.controllers.produtos.cad_prod_mage(req, res)
+        produto.atualiza_mage(req, res)
     })
 
     application.get('/atualiza_base', function (req, res) {
         produto.atualiza_base(req, res)
-        //application.src.controllers.produtos.atualiza_base(req, res)
+    })
+
+    application.get('/cad_unic/:D009_Id/:sku', function (req, res) {
+        produto.cad_prod_unic(req, res)
     })
 }

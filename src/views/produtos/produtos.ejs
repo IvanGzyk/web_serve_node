@@ -57,6 +57,7 @@
                                         <th class="border border-light border-1 p-1">Qtd Ec</th>
                                         <th class="border border-light border-1 p-1">Ativo</th>
                                         <th class="border border-light border-1 p-1"></th>
+                                        <th class="border border-light border-1 p-1"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,8 +94,10 @@
                                                 <%=element.active %>
                                             </td>
                                             <td class="p-1">
-                                                <a href="/form_update/<%=element.id%>"><i
-                                                        class="bi bi-pencil-square"></i></a>
+                                                <a href="/form_update/<%=element.id%>"><i class="bi bi-pencil-square"></i></a>
+                                            </td>
+                                            <td class="p-1">
+                                                <a href="/cad_unic/<%=element.hrd_D009_Id%>/<%=element.product_code%>"><i class="bi bi-shop-window"></i></a>
                                             </td>
                                         </tr>
                                         <% }) %>

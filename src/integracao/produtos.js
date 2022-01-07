@@ -26,7 +26,7 @@ const postProduto = async function (json) {
         let dados = await client.post('products', json)
         return dados
     } catch (err) {
-        console.log(err.response.data)
+        console.log(err.response.data.message)
     }
 }
 
@@ -35,7 +35,7 @@ const putProduto = async function (sku, json) {
         let dados = await client.put(`products/${sku}`, json)
         return dados
     } catch (err) {
-        console.log(err.response.data)
+        console.log(err.response.data.message)
     }
 }
 
@@ -44,7 +44,7 @@ const deleteProduto = async function (sku) {
         let dados = await client.delete(`products/${sku}`)
         return dados
     } catch (err) {
-        console.log(err.response.data)
+        console.log(err.response.data.message)
     }
 }
 

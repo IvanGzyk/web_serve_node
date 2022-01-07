@@ -3,135 +3,201 @@ const eco_db = require("../../config/db").eco_db
 const CronJob = require('cron').CronJob
 
 function postProduto(res, obj, img_json = '') {
+    cat = obj.categ
+    cate = ''
+    x = 1
+    if (cat.length > 1) {
+
+        cat.forEach(categoria => {
+            if (x == 1) {
+                cate = `'
+                "category_links": [
+                    {
+                        "position": 0,
+                        "category_id": "${categoria}"
+                    },`
+            } else {
+                p = x - 1
+                cate += `'
+                    {
+                        "position": ${p},
+                        "category_id": "${categoria}"
+                    }`
+                if (x != cat.length) {
+                    cate += ','
+                }
+            }
+            if (x == cat.length) {
+                cate += `
+                ],'`
+            }
+            x++
+        })
+
+    } else {
+        cate = `'
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "${cat}"
+                }
+            ]`
+    }
     if (img_json != '') {
         try {
             eco_db.query(`INSERT INTO product(
-                hrd_D009_Id, 
-                product_code, 
-                nome, 
-                cost_unit, 
-                ipv, 
-                price_unit, 
-                local_quantity, 
-                reserved_quantity, 
+                hrd_D009_Id,
+                product_code,
+                nome,
+                cost_unit,
+                ipv,
+                price_unit,
+                local_quantity,
+                reserved_quantity,
                 actual_quantity,
                 categories_id,
                 img
             ) VALUES (
-                ${obj.hrd_D009_Id}, 
+                ${obj.hrd_D009_Id},
                 '${obj.product_code}',
-                '${obj.nome}', 
-                ${obj.cost_unit}, 
-                ${obj.ipv}, 
-                ${obj.price_unit}, 
-                ${obj.local_quantity}, 
-                ${obj.reserved_quantity}, 
+                '${obj.nome}',
+                ${obj.cost_unit},
+                ${obj.ipv},
+                ${obj.price_unit},
+                ${obj.local_quantity},
+                ${obj.reserved_quantity},
                 ${obj.actual_quantity},
-                ${obj.categ},
+                ${cate},
                 ${img_json}
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     } else {
         try {
             eco_db.query(`INSERT INTO product(
-                hrd_D009_Id, 
-                product_code, 
-                nome, 
-                cost_unit, 
-                ipv, 
-                price_unit, 
-                local_quantity, 
-                reserved_quantity, 
+                hrd_D009_Id,
+                product_code,
+                nome,
+                cost_unit,
+                ipv,
+                price_unit,
+                local_quantity,
+                reserved_quantity,
                 actual_quantity,
                 categories_id
             ) VALUES (
-                ${obj.hrd_D009_Id}, 
+                ${obj.hrd_D009_Id},
                 '${obj.product_code}',
-                '${obj.nome}', 
-                ${obj.cost_unit}, 
-                ${obj.ipv}, 
-                ${obj.price_unit}, 
-                ${obj.local_quantity}, 
-                ${obj.reserved_quantity}, 
-                ${obj.actual_quantity}, 
-                ${obj.categ}
+                '${obj.nome}',
+                ${obj.cost_unit},
+                ${obj.ipv},
+                ${obj.price_unit},
+                ${obj.local_quantity},
+                ${obj.reserved_quantity},
+                ${obj.actual_quantity},
+                ${cate}
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     }
 }
 
 function putProduto(res, obj, img_json = '') {
-    aitvo = 'N'
+    cat = obj.categ
+    cate = ''
+    x = 1
+    if (cat.length > 1) {
+
+        cat.forEach(categoria => {
+            if (x == 1) {
+                cate = `
+                "category_links": [
+                    {
+                        "position": 0,
+                        "category_id": "${categoria}"
+                    },`
+            } else {
+                p = x - 1
+                cate += `
+                    {
+                        "position": ${p},
+                        "category_id": "${categoria}"
+                    }`
+                if (x != cat.length) {
+                    cate += ','
+                }
+            }
+            if (x == cat.length) {
+                cate += `
+                ],`
+            }
+            x++
+        })
+
+    } else {
+        cate = `
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "${cat}"
+                }
+            ]`
+    }
+    //console.log(cate)
+    ativo = 'N'
     if (obj.active) {
-        aitvo = 'S'
+        ativo = 'S'
     }
     if (img_json != '') {
-        console.log(`
-        UPDATE product SET 
-        hrd_D009_Id='${obj.hrd_D009_Id}', 
-        product_code='${obj.product_code}',
-        nome='${obj.nome}', 
-        cost_unit='${obj.cost_unit}', 
-        ipv='${obj.ipv}', 
-        price_unit='${obj.price_unit}', 
-        local_quantity='${obj.local_quantity}', 
-        reserved_quantity='${obj.reserved_quantity}', 
-        actual_quantity='${obj.actual_quantity}', 
-        active='${aitvo}',            
-        categories_id=${obj.categ},
-        img = ${img_json}
-        WHERE  id=${obj.id};`)
         try {
             eco_db.query(`
-            UPDATE product SET 
-            hrd_D009_Id='${obj.hrd_D009_Id}', 
+            UPDATE product SET
+            hrd_D009_Id='${obj.hrd_D009_Id}',
             product_code='${obj.product_code}',
-            nome='${obj.nome}', 
-            cost_unit='${obj.cost_unit}', 
-            ipv='${obj.ipv}', 
-            price_unit='${obj.price_unit}', 
-            local_quantity='${obj.local_quantity}', 
-            reserved_quantity='${obj.reserved_quantity}', 
-            actual_quantity='${obj.actual_quantity}', 
-            active='${aitvo}',            
-            categories_id=${obj.categ},
+            nome='${obj.nome}',
+            cost_unit='${obj.cost_unit}',
+            ipv='${obj.ipv}',
+            price_unit='${obj.price_unit}',
+            local_quantity='${obj.local_quantity}',
+            reserved_quantity='${obj.reserved_quantity}',
+            actual_quantity='${obj.actual_quantity}',
+            active='${ativo}',
+            categories_id='${cate}',
             img = ${img_json}
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            console.log(err)
+            //console.log(err)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     } else {
         try {
             eco_db.query(`
-            UPDATE product SET 
-            hrd_D009_Id='${obj.hrd_D009_Id}', 
+            UPDATE product SET
+            hrd_D009_Id='${obj.hrd_D009_Id}',
             product_code='${obj.product_code}',
-            nome='${obj.nome}', 
-            cost_unit='${obj.cost_unit}', 
-            ipv='${obj.ipv}', 
-            price_unit='${obj.price_unit}', 
-            local_quantity='${obj.local_quantity}', 
-            reserved_quantity='${obj.reserved_quantity}', 
-            actual_quantity='${obj.actual_quantity}', 
-            active='${aitvo}',  
-            categories_id=${obj.categ}
+            nome='${obj.nome}',
+            cost_unit='${obj.cost_unit}',
+            ipv='${obj.ipv}',
+            price_unit='${obj.price_unit}',
+            local_quantity='${obj.local_quantity}',
+            reserved_quantity='${obj.reserved_quantity}',
+            actual_quantity='${obj.actual_quantity}',
+            active='${ativo}',
+            categories_id='${cate}'
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            console.log(err)
-            getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+            //console.log(err)
+            //getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
 
@@ -155,13 +221,13 @@ function deleteProduto(id) {
 const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
     try {
-        db.query(`SELECT 
+        db.query(`SELECT
             D009_Id hrd_D009_Id,
             D1.D001_Codigo_Produto product_code,
             D2.D002_Descricao_Produto nome,
             D009_Custo(D009_Id, 3) cost_unit,
             1.50 ipv,
-            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit, 
+            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
             D009_Quantidade_Estoque_Real local_quantity,
             0 reserved_quantity,
             D009_Quantidade_Estoque_Real actual_quantity
@@ -181,24 +247,24 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
             rows.forEach(element => {
                 try {
                     eco_db.query(`INSERT IGNORE INTO product(
-                    hrd_D009_Id, 
-                    product_code, 
-                    nome, 
-                    cost_unit, 
-                    ipv, 
-                    price_unit, 
-                    local_quantity, 
-                    reserved_quantity, 
+                    hrd_D009_Id,
+                    product_code,
+                    nome,
+                    cost_unit,
+                    ipv,
+                    price_unit,
+                    local_quantity,
+                    reserved_quantity,
                     actual_quantity
                 ) VALUES (
-                    ${element.hrd_D009_Id}, 
+                    ${element.hrd_D009_Id},
                     '${element.product_code}',
-                    '${element.nome}', 
-                    ${element.cost_unit}, 
-                    ${element.ipv}, 
-                    ${element.price_unit}, 
-                    ${element.local_quantity}, 
-                    ${element.reserved_quantity}, 
+                    '${element.nome}',
+                    ${element.cost_unit},
+                    ${element.ipv},
+                    ${element.price_unit},
+                    ${element.local_quantity},
+                    ${element.reserved_quantity},
                     ${element.actual_quantity}
                 );`)
                 } catch (err) {
@@ -214,13 +280,13 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
 function atualizaBase(res) {
     try {
-        db.query(`SELECT 
+        db.query(`SELECT
             D009_Id hrd_D009_Id,
             D1.D001_Codigo_Produto product_code,
             D2.D002_Descricao_Produto nome,
             D009_Custo(D009_Id, 3) cost_unit,
             1.50 ipv,
-            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit, 
+            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
             D009_Quantidade_Estoque_Real local_quantity,
             0 reserved_quantity,
             D009_Quantidade_Estoque_Real actual_quantity
@@ -240,24 +306,24 @@ function atualizaBase(res) {
             rows.forEach(element => {
                 try {
                     eco_db.query(`INSERT IGNORE INTO product(
-                    hrd_D009_Id, 
-                    product_code, 
-                    nome, 
-                    cost_unit, 
-                    ipv, 
-                    price_unit, 
-                    local_quantity, 
-                    reserved_quantity, 
+                    hrd_D009_Id,
+                    product_code,
+                    nome,
+                    cost_unit,
+                    ipv,
+                    price_unit,
+                    local_quantity,
+                    reserved_quantity,
                     actual_quantity
                 ) VALUES (
-                    ${element.hrd_D009_Id}, 
+                    ${element.hrd_D009_Id},
                     '${element.product_code}',
-                    '${element.nome}', 
-                    ${element.cost_unit}, 
-                    ${element.ipv}, 
-                    ${element.price_unit}, 
-                    ${element.local_quantity}, 
-                    ${element.reserved_quantity}, 
+                    '${element.nome}',
+                    ${element.cost_unit},
+                    ${element.ipv},
+                    ${element.price_unit},
+                    ${element.local_quantity},
+                    ${element.reserved_quantity},
                     ${element.actual_quantity}
                 );`)
                 } catch (err) {
@@ -270,7 +336,7 @@ function atualizaBase(res) {
                     produtos: rows
                 })
             })
-            
+
         })
     } catch (err) {
         console.log(err)

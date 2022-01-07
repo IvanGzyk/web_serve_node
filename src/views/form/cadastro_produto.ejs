@@ -90,7 +90,7 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Categorias</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <select class="form-control" name="categ" <!--multiple-->>
+                                        <select class="form-control" name="categ" multiple required>
                                             <% categorias.forEach(element=> { %>
                                                 <option value="<%= element.id %>"><%= element.name %></option>
                                                 <% }) %>
@@ -100,8 +100,7 @@
                                 <tr>
                                     <td class="p-1 fw-bold text-left">Imagem</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input required class="form-control form-control-sm" type="file" name="foto"
-                                            multiple value="">
+                                        <input required class="form-control form-control-sm" type="file" name="foto" multiple value="">
                                     </td>
                                 </tr>
                             </tbody>
