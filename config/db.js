@@ -35,7 +35,6 @@ setInterval(function () {
     connection.query('SELECT 1')
     eco_db.query('SELECT 1')
     hardness_db.query('SELECT 1')
-    console.log('Conectado!')
 }, 5000)
 
 

@@ -92,7 +92,7 @@ async function getCustomer(id_) {
     try {
         const customer = Customer.findAll({
             where: {
-                entity_id: id_
+                id: id_
             }
         })
         return customer
