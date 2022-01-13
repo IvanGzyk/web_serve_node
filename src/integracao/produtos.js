@@ -48,5 +48,23 @@ const deleteProduto = async function (sku) {
     }
 }
 
+const addProdutoSimple = async function (sku, json){
+    try {
+        let dados = await client.post(`configurable-products/${sku}/child`, json)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
 
-module.exports = { client, getProdutos, getProduto, postProduto, putProduto, deleteProduto}
+const ProdutoConfigurableOptions = async function (sku, json){
+    try {
+        let dados = await client.post(`configurable-products/${sku}/options`, json)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
+
+
+module.exports = { client, getProdutos, getProduto, postProduto, putProduto, deleteProduto, addProdutoSimple, ProdutoConfigurableOptions}

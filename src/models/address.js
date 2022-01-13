@@ -1,51 +1,62 @@
 const Sequelize = require('sequelize');
 const db = require("../../config/db").sequelize
-
 /** Cria a tabela caso não exista */
 const Address = db.define('api_address', {
     id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
         primaryKey: true
-    },address_type: {
-        type: Sequelize.STRING(100)
+    },
+    address_type: {
+        type: Sequelize.STRING
     },
     city: {
         type: Sequelize.STRING
     },
     company: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
     },
     country_id: {
-        type: Sequelize.STRING(10)
+        type: Sequelize.STRING
     },
     customer_address_id: {
         type: Sequelize.INTEGER
     },
+    customer_id: {
+        type: Sequelize.INTEGER
+    },
     email: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
     },
     entity_id: {
         type: Sequelize.INTEGER
     },
+    fax: {
+        type: Sequelize.STRING
+    },
     firstname: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
     },
     lastname: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
+    },
+    middlename: {
+        type: Sequelize.STRING
     },
     parent_id: {
         type: Sequelize.INTEGER
     },
     postcode: {
-        type: Sequelize.STRING(11)
+        type: Sequelize.STRING
+    },
+    prefix: {
+        type: Sequelize.STRING
     },
     region: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
     },
     region_code: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
     },
     region_id: {
         type: Sequelize.INTEGER
@@ -53,18 +64,41 @@ const Address = db.define('api_address', {
     street: {
         type: Sequelize.JSON
     },
+    suffix: {
+        type: Sequelize.STRING
+    },
     telephone: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING
+    },
+    vat_id: {
+        type: Sequelize.STRING
+    },
+    vat_is_valid: {
+        type: Sequelize.INTEGER
+    },
+    vat_request_date: {
+        type: Sequelize.STRING
+    },
+    vat_request_id: {
+        type: Sequelize.STRING
+    },
+    vat_request_success: {
+        type: Sequelize.INTEGER
+    },
+    default_shipping: {
+        type: Sequelize.BOOLEAN
+    },
+    default_billing: {
+        type: Sequelize.BOOLEAN
+    },
+    extension_attributes: {
+        type: Sequelize.JSON
+    },
+    custom_attributes: {
+        type: Sequelize.JSON
     }
-},
-{
-    indexes: [
-        {
-            unique: true,
-            fields: ['entity_id']
-        }
-    ]
 })
+
 Address.sync()
 
 /** Cria novo address*/
@@ -102,12 +136,12 @@ async function getAddresss() {
 async function updateAddress(array, id_) {
     try {
         const address = await Address.update(
-            array, 
+            array,
             {
-            where: {
-                id: id_
-            }
-        })
+                where: {
+                    entity_id: id_
+                }
+            })
         //return address
     } catch (error) {
         console.log(error)
@@ -115,14 +149,14 @@ async function updateAddress(array, id_) {
 }
 
 /**Deleta address especifico */
-async function deleteAddress(id_){
-    try{
+async function deleteAddress(id_) {
+    try {
         await Address.destroy({
-            where:{
-                id: id_
+            where: {
+                entity_id: id_
             }
         })
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

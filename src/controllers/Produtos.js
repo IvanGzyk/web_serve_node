@@ -26,10 +26,9 @@ class Produtos {
         var x = 1
         var bd = db_eco.eco_db
         req.files.forEach(element => {
-            //console.log(element)
             var base64str = this.base64_encode(element.path)
             if (x == 1) {
-                img_json = `'
+                img_json = `
                     "media_gallery_entries": [
                         {
                             "id": null,
@@ -47,7 +46,7 @@ class Produtos {
                                 "Type":"${element.mimetype}",
                                 "Name":"${element.originalname}"
                             }
-                        },`
+                        }`
             } else {
                 img_json += `
                         {
@@ -67,18 +66,17 @@ class Produtos {
                                 "Name":"${element.originalname}"
                             }
                         }`
-                if (x != req.files.length) {
-                    img_json += ','
-                }
+            }
+            if (x != req.files.length) {
+                img_json += ','
             }
             if (x == req.files.length) {
-                img_json += `],'`
+                img_json += `]`
                 const obj = JSON.parse(JSON.stringify(req.body))
                 ProdutoModel.postProduto(res, obj, img_json)
             }
             x++
         })
-        //console.log(img_json)
     }
 
     form_atualiza(req, res) {
@@ -108,10 +106,9 @@ class Produtos {
         if (req.files.length != 0) {
 
             req.files.forEach(element => {
-                //console.log(element)
                 var base64str = this.base64_encode(element.path)
                 if (x == 1) {
-                    img_json = `'
+                    img_json = `
                         "media_gallery_entries": [
                             {
                                 "id": null,
@@ -129,7 +126,7 @@ class Produtos {
                                     "Type":"${element.mimetype}",
                                     "Name":"${element.originalname}"
                                 }
-                            },`
+                            }`
                 } else {
                     img_json += `
                             {
@@ -149,12 +146,12 @@ class Produtos {
                                     "Name":"${element.originalname}"
                                 }
                             }`
-                    if (x != req.files.length) {
-                        img_json += ','
-                    }
+                }
+                if (x != req.files.length) {
+                    img_json += ','
                 }
                 if (x == req.files.length) {
-                    img_json += `],'`
+                    img_json += `]`
                     ProdutoModel.putProduto(res, obj, img_json)
                 }
                 x++
@@ -186,170 +183,65 @@ class Produtos {
 
         bd.query('SELECT * FROM product', function (err, rows, fields) {
             var json
-            prod_mag.getProdutos().then(data => data.data).then(data => data.items).then(data => {
-                var qtd_mage = data.length
-                console.log(qtd_mage)
-                rows.forEach(element => {
-                    if (element.active == 'N') {
-                        id_d009 = element.hrd_D009_Id
-                        sku = element.product_code
-                        name = element.nome
-                        price = element.price_unit
-                        qty = element.actual_quantity
-                        category = element.categories_id
-                        ativo = 0
-                        if (qtd_mage != 0) {
-                            data.forEach(cod_prod => {
-                                if (cod_prod.sku == element.product_code) {
-
-                                    json = `
-                                    {
-                                        "product":{
-                                            "sku":"${sku}",
-                                            "name":"${name} - ${sku}/${id_d009}",
-                                            "price":${price},
-                                            "status":${ativo},
-                                            "type_id":"simple",
-                                            "attribute_set_id":4,
-                                            "weight":1,
-                                            "extension_attributes":{
-                                                "website_ids": [
-                                                    1
-                                                ],
-                                                ${category}
-                                                "stock_item":{
-                                                    "qty":${qty},
-                                                    "is_in_stock":true
-                                                }
-                                            },
-                                            "custom_attributes": [{
-                                                "attribute_code": "id_d009",
-                                                "value": "${id_d009}"
-                                            }]
-                                        }
-                                    }`
-                                    prod_mag.deleteProduto(sku).then(ret => {
-                                        console.log(ret)
-                                        // prod_mag.postProduto(/*sku,*/ json).then(data => {
-                                        //     console.log(data)
-                                        // })
-                                    })
-                                }
-                            })
+            rows.forEach(element => {
+                id_d009 = element.hrd_D009_Id
+                sku = element.product_code
+                name = element.nome
+                price = element.price_unit
+                qty = element.actual_quantity
+                category = element.categories_id
+                ativo = 0
+                if (element.active == 'N') {
+                    json = `
+                        {
+                            "product": {
+                                "status":${ativo}
+                            }
+                        }`
+                } else {
+                    ativo = 1
+                    json = `
+                        {
+                            "product":{
+                                "sku":"${sku}",
+                                "name":"${name}-${sku}-${id_d009}",
+                                "price":${price},
+                                "status":${ativo},
+                                "visibility": 4,
+                                "type_id":"simple",
+                                "attribute_set_id":4,
+                                "weight":1,
+                                "extension_attributes":{
+                                    "website_ids": [
+                                        1
+                                    ],
+                                    ${category}
+                                    "stock_item":{
+                                        "qty":${qty},
+                                        "is_in_stock":true
+                                    }
+                                },
+                                ${img},
+                                "custom_attributes": [{
+                                    "attribute_code": "id_d009",
+                                    "value": "${id_d009}"
+                                }]
+                            },
+                            "saveOptions": true
+                        }`
+                }
+                prod_mag.getProduto(sku).then(data => data.data).then(data => data.items).then(data => {
+                    if (data.length != 0) {
+                        try {
+                            prod_mag.putProduto(sku, json)
+                        } catch (error) {
+                            console.log("Produto não encontrado!")
                         }
-
-                    } else if (element.active == 'S') {
-                        id_d009 = element.hrd_D009_Id
-                        sku = element.product_code
-                        name = element.nome
-                        price = element.price_unit
-                        qty = element.actual_quantity
-                        category = element.categories_id
-                        ativo = 1
-                        img = element.img
-
-                        if (qtd_mage != 0) {
-                            data.forEach(cod_prod => {
-                                if (cod_prod.sku == element.product_code) {
-                                    json = `
-                                        {
-                                        "product":{
-                                            "sku":"${sku}",
-                                            "name":"${name} - ${sku}/${id_d009}",
-                                            "price":${price},
-                                            "status":${ativo},
-                                            "type_id":"simple",
-                                            "attribute_set_id":4,
-                                            "weight":1,
-                                            "extension_attributes":{
-                                                "website_ids": [
-                                                    1
-                                                ],
-                                                ${category}
-                                                "stock_item":{
-                                                    "qty":${qty},
-                                                    "is_in_stock":true
-                                                }
-                                            },
-                                            ${img}
-                                            "custom_attributes": [{
-                                                "attribute_code": "id_d009",
-                                                "value": "${id_d009}"
-                                            }]
-                                        }
-                                    }`
-
-                                    prod_mag.deleteProduto(sku).then(ret => {
-                                        prod_mag.postProduto(/*sku,*/ json).then(data => {
-                                            console.log(data)
-                                        })
-                                    })
-                                }
-                                else {
-                                    json = `
-                                        {
-                                            "product":{
-                                                "sku":"${sku}",
-                                                "name":"${name} - ${sku}/${id_d009}",
-                                                "price":${price},
-                                                "status":${ativo},
-                                                "type_id":"simple",
-                                                "attribute_set_id":4,
-                                                "weight":1,
-                                                "extension_attributes":{
-                                                    "website_ids": [
-                                                        1
-                                                    ],
-                                                    ${category}
-                                                    "stock_item":{
-                                                        "qty":${qty},
-                                                        "is_in_stock":true
-                                                    }
-                                                },
-                                                ${img}
-                                                "custom_attributes": [{
-                                                    "attribute_code": "id_d009",
-                                                    "value": "${id_d009}"
-                                                }]
-                                            }
-                                        }`
-                                    prod_mag.postProduto(json).then(data => {
-                                        console.log(data)
-                                    })
-                                }
-                            })
-                        } else {
-                            json = `
-                            {
-                                "product":{
-                                    "sku":"${sku}",
-                                    "name":"${name} - ${sku}/${id_d009}",
-                                    "price":${price},
-                                    "status":${ativo},
-                                    "type_id":"simple",
-                                    "attribute_set_id":4,
-                                    "weight":1,
-                                    "extension_attributes":{
-                                        "website_ids": [
-                                            1
-                                        ],
-                                        ${category}
-                                        "stock_item":{
-                                            "qty":${qty},
-                                            "is_in_stock":true
-                                        }
-                                    },
-                                    ${img}
-                                    "custom_attributes": [{
-                                        "attribute_code": "id_d009",
-                                        "value": "${id_d009}"
-                                    }]
-                                }
-                            }`
-                            prod_mag.postProduto(json).then(data => {
-                                console.log(data)
-                                qtd_mage++
-                            })
+                    } else if (element.active != 'N') {
+                        try {
+                            prod_mag.postProduto(json)
+                        } catch (error) {
+                            console.log("Produto não encontrado!")
                         }
                     }
                 })
@@ -376,15 +268,13 @@ class Produtos {
         bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
             var json
             rows.forEach(element => {
-
                 id_d009 = element.hrd_D009_Id
-                sku = element.product_code
+                sku = element.product_code + '/' + element.hrd_D009_Id
                 name = element.nome
                 price = element.price_unit
                 qty = element.actual_quantity
                 category = element.categories_id
                 ativo = 0
-
                 if (element.active == 'N') {
                     json = `
                         {
@@ -392,63 +282,119 @@ class Produtos {
                                 "status":${ativo}
                             }
                         }`
-                    try {
-                        prod_mag.putProduto(sku, json)
-                    } catch (error) {
-                        console.log("Produto não encontrado!")
-                    }
                 } else {
                     ativo = 1
+                    img = element.img
+                    json = `
+                        {
+                            "product":{
+                                "sku":"${sku}",
+                                "name":"${name} - ${sku}",
+                                "attribute_set_id":15,
+                                "price":${price},
+                                "status":${ativo},
+                                "visibility": 1,
+                                "type_id":"simple",
+                                "weight": "0.5",
+                                "extension_attributes":{
+                                    ${category},
+                                    "stock_item":{
+                                        "qty":${qty},
+                                        "is_in_stock":true
+                                    }
+                                },
+                                ${img},
+                                "custom_attributes": [
+                                    {
+                                        "attribute_code": "description",
+                                        "value": "Colocar aqui a descrição do produto..."
+                                    },
+                                    {
+                                        "attribute_code": "id_d009",
+                                        "value": "${id_d009}"
+                                    },
+                                    {
+                                        "attribute_code": "fornecedor",
+                                        "value": "5"
+                                    }
+                                ]
+                            }
+                        }`
                 }
-
-                img = element.img
-                json = `
-                    {
-                        "product":{
-                            "sku":"${sku}",
-                            "name":"${name} - ${sku}/${id_d009}",
-                            "price":${price},
-                            "status":${ativo},
-                            "visibility": 4,
-                            "type_id":"simple",
-                            "attribute_set_id":4,
-                            "weight":1,
-                            "extension_attributes":{
-                                "website_ids": [
-                                    1
-                                ],
-                                ${category}
-                                "stock_item":{
-                                    "qty":${qty},
-                                    "is_in_stock":true
+                prod_mag.getProduto(element.product_code).then(data => data.data).then(data => data.items).then(data => {
+                    if (data.length == 0) {
+                        var json_configurable = `{
+                            "product": 
+                                {
+                                    "sku": "${element.product_code}",
+                                    "name": "${name}",
+                                    "attribute_set_id": 15,
+                                    "status": 1,
+                                    "visibility": 4,
+                                    "type_id": "configurable",
+                                    "weight": "0.5",
+                                    "extension_attributes": {
+                                        ${category},
+                                        "stock_item":{
+                                            "qty":${qty},
+                                            "is_in_stock":true
+                                        }
+                                    },
+                                    "custom_attributes": [
+                                        {
+                                            "attribute_code": "description",
+                                            "value": "Colocar aqui a descrição do produto..."
+                                        },
+                                        {
+                                            "attribute_code": "id_d009",
+                                            "value": "${id_d009}"
+                                        }
+                                    ]
                                 }
-                            },
-                            ${img}
-                            "custom_attributes": [{
-                                "attribute_code": "id_d009",
-                                "value": "${id_d009}"
-                            }]
+                            }`
+                        var options = `{
+                                "sku": "${element.product_code}",
+                                    "option": {
+                                    "attribute_id": "139",
+                                    "label": "fornecedor",
+                                    "position": 0,
+                                    "is_use_default": true,
+                                    "values": [
+                                            {
+                                                "value_index": 5
+                                            }
+                                        ]
+                                    }
+                                }`
+                        try {
+                            prod_mag.postProduto(json_configurable).then(dados => {
+                                prod_mag.ProdutoConfigurableOptions(element.product_code, options)
+                            })
+                        } catch (error) {
+                            console.log("Produto não encontrado!")
                         }
-                    }`
-
-                prod_mag.getProduto(params.sku).then(data => data.data).then(data => data.items).then(data => {
+                    }
                     if (data.length != 0) {
                         try {
                             prod_mag.putProduto(sku, json)
                         } catch (error) {
                             console.log("Produto não encontrado!")
                         }
-                    } else {
+                    } else if (element.active != 'N') {
                         try {
-                            prod_mag.postProduto(json)
+                            prod_mag.postProduto(json).then(data => {
+                                try {
+                                    prod_mag.addProdutoSimple(element.product_code, `{"childSku": "${sku}"}`)
+                                } catch (err) {
+                                    console.log(err)
+                                }
+                            })
                         } catch (error) {
                             console.log("Produto não encontrado!")
                         }
                     }
                 })
-                console.log('Processando!!!')
             })
-            console.log('Fim!!!')
         })
         bd.query('SELECT * FROM product', function (err, rows, fields) {
             res.render("produtos/produtos", {

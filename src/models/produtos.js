@@ -10,7 +10,7 @@ function postProduto(res, obj, img_json = '') {
 
         cat.forEach(categoria => {
             if (x == 1) {
-                cate = `'
+                cate = `
                 "category_links": [
                     {
                         "position": 0,
@@ -29,13 +29,13 @@ function postProduto(res, obj, img_json = '') {
             }
             if (x == cat.length) {
                 cate += `
-                ],'`
+                ]`
             }
             x++
         })
 
     } else {
-        cate = `'
+        cate = `
             "category_links": [
                 {
                     "position": 0,
@@ -135,7 +135,7 @@ function putProduto(res, obj, img_json = '') {
             }
             if (x == cat.length) {
                 cate += `
-                ],`
+                ]`
             }
             x++
         })
