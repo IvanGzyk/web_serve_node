@@ -68,7 +68,7 @@ function postProduto(res, obj, img_json = '') {
                 ${obj.reserved_quantity},
                 ${obj.actual_quantity},
                 ${cate},
-                ${img_json}
+                '${img_json}'
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
@@ -149,7 +149,6 @@ function putProduto(res, obj, img_json = '') {
                 }
             ]`
     }
-    //console.log(cate)
     ativo = 'N'
     if (obj.active) {
         ativo = 'S'
@@ -169,12 +168,12 @@ function putProduto(res, obj, img_json = '') {
             actual_quantity='${obj.actual_quantity}',
             active='${ativo}',
             categories_id='${cate}',
-            img = ${img_json}
+            img = '${img_json}'
             WHERE  id=${obj.id};`)
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            //console.log(err)
+            console.log(err)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     } else {
@@ -196,8 +195,8 @@ function putProduto(res, obj, img_json = '') {
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            //console.log(err)
-            //getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+            console.log(err)
+            getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
 
@@ -214,6 +213,19 @@ function getProduto(res, msg_ = '') {
 
 function deleteProduto(id) {
     eco_db.query(`DELETE FROM product where id = ${id}`)
+}
+
+function putImg(res, id, img){
+    try {
+    eco_db.query(`
+    UPDATE product SET
+    img = '${img}'
+    WHERE  id=${id};`)
+    getProduto(res, "Imagem atualizada!")
+} catch (err) {
+    getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+}
+
 }
 
 /** Cadastra novos produtos */
@@ -350,3 +362,4 @@ module.exports.putProduto = putProduto
 module.exports.getProduto = getProduto
 module.exports.deleteProduto = deleteProduto
 module.exports.atualizaBase = atualizaBase
+module.exports.putImg = putImg

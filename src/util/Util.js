@@ -33,5 +33,56 @@ class Util {
         return data_inicio
     }
 
+    salva_id_img(img_local, img_magento){
+        let x = 1
+        let img_json
+        img_local.forEach(local => {
+            img_magento.forEach(magento => {
+                if (magento.label == local.label){
+                    local.id = magento.id
+                }
+            })
+            var content = JSON. stringify(local.content)
+            if (x == 1){                
+                img_json = img_json = `
+                "media_gallery_entries": [
+                    {
+                        "id": ${local.id},
+                        "mediaType":"${local.mediaType}",
+                        "label":"${local.label}",
+                        "position": ${local.position},
+                        "disabled": ${local.disabled},
+                        "types":[
+                            "image",
+                            "small_image",
+                            "thumbnail"
+                        ],
+                        "content":${content}
+                    }`
+            } else {
+                img_json += `{
+                    "id": ${local.id},
+                    "mediaType":"${local.mediaType}",
+                    "label":"${local.label}",
+                    "position": ${local.position},
+                    "disabled": ${local.disabled},
+                    "types":[
+                        "image",
+                        "small_image",
+                        "thumbnail"
+                    ],
+                    "content":${content}
+                }`
+            }
+            if (x != img_local.length) {
+                img_json += ','
+            }
+            if (x == img_local.length) {
+                img_json += `]`
+            }
+            x++
+        })
+        return img_json
+    }
 }
 module.exports.Util = new Util()

@@ -35,7 +35,7 @@ const putProduto = async function (sku, json) {
         let dados = await client.put(`products/${sku}`, json)
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.log(err.response.data.parameters)
     }
 }
 
@@ -66,5 +66,13 @@ const ProdutoConfigurableOptions = async function (sku, json){
     }
 }
 
+const GetProdutosAtributos = async function (params){
+    try {
+        let dados = await client.get(`products/atrributes`, params)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
 
-module.exports = { client, getProdutos, getProduto, postProduto, putProduto, deleteProduto, addProdutoSimple, ProdutoConfigurableOptions}
+module.exports = { client, getProdutos, getProduto, postProduto, putProduto, deleteProduto, addProdutoSimple, ProdutoConfigurableOptions, GetProdutosAtributos}
