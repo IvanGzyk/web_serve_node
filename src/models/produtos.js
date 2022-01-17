@@ -72,7 +72,7 @@ function postProduto(res, obj, img_json = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            //console.log(err)
+            //console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     } else {
@@ -102,7 +102,7 @@ function postProduto(res, obj, img_json = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            //console.log(err)
+            //console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     }
@@ -173,7 +173,7 @@ function putProduto(res, obj, img_json = '') {
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            console.log(err)
+            console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     } else {
@@ -195,7 +195,7 @@ function putProduto(res, obj, img_json = '') {
             getProduto(res, "Produto atualizado!")
 
         } catch (err) {
-            console.log(err)
+            console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
@@ -215,16 +215,16 @@ function deleteProduto(id) {
     eco_db.query(`DELETE FROM product where id = ${id}`)
 }
 
-function putImg(res, id, img){
+function putImg(res, id, img) {
     try {
-    eco_db.query(`
+        eco_db.query(`
     UPDATE product SET
     img = '${img}'
     WHERE  id=${id};`)
-    getProduto(res, "Imagem atualizada!")
-} catch (err) {
-    getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
-}
+        getProduto(res, "Imagem atualizada!")
+    } catch (err) {
+        getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+    }
 
 }
 
@@ -235,8 +235,10 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
     try {
         db.query(`SELECT
             D009_Id hrd_D009_Id,
+            D49.D049_Id,
             D1.D001_Codigo_Produto product_code,
             D2.D002_Descricao_Produto nome,
+            D24.D024_Nome_Empresa fornecedor,
             D009_Custo(D009_Id, 3) cost_unit,
             1.50 ipv,
             SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
@@ -247,6 +249,7 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
         INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
         INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
         INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
+        INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
         WHERE
             D009_C004_Id = 1
             AND D1.D001_C008_Id = 1
@@ -261,7 +264,9 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
                     eco_db.query(`INSERT IGNORE INTO product(
                     hrd_D009_Id,
                     product_code,
+                    D049Id,
                     nome,
+                    fornecedor,
                     cost_unit,
                     ipv,
                     price_unit,
@@ -271,7 +276,9 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
                 ) VALUES (
                     ${element.hrd_D009_Id},
                     '${element.product_code}',
+                    '${element.D049_Id}',
                     '${element.nome}',
+                    '${element.fornecedor}',
                     ${element.cost_unit},
                     ${element.ipv},
                     ${element.price_unit},
@@ -280,12 +287,12 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
                     ${element.actual_quantity}
                 );`)
                 } catch (err) {
-                    console.log(err)
+                    console.log(err.response.data.message)
                 }
             });
         })
     } catch (err) {
-        console.log(err)
+        console.log(err.response.data.message)
     }
 
 }, null, true, 'America/Sao_Paulo')
@@ -294,8 +301,10 @@ function atualizaBase(res) {
     try {
         db.query(`SELECT
             D009_Id hrd_D009_Id,
+            D49.D049_Id,
             D1.D001_Codigo_Produto product_code,
             D2.D002_Descricao_Produto nome,
+            D24.D024_Nome_Empresa fornecedor,
             D009_Custo(D009_Id, 3) cost_unit,
             1.50 ipv,
             SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
@@ -306,6 +315,7 @@ function atualizaBase(res) {
         INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
         INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
         INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
+        INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
         WHERE
             D009_C004_Id = 1
             AND D1.D001_C008_Id = 1
@@ -320,7 +330,9 @@ function atualizaBase(res) {
                     eco_db.query(`INSERT IGNORE INTO product(
                     hrd_D009_Id,
                     product_code,
+                    D049Id,
                     nome,
+                    fornecedor,
                     cost_unit,
                     ipv,
                     price_unit,
@@ -330,7 +342,9 @@ function atualizaBase(res) {
                 ) VALUES (
                     ${element.hrd_D009_Id},
                     '${element.product_code}',
+                    '${element.D049_Id}',
                     '${element.nome}',
+                    '${element.fornecedor}',
                     ${element.cost_unit},
                     ${element.ipv},
                     ${element.price_unit},
@@ -339,7 +353,7 @@ function atualizaBase(res) {
                     ${element.actual_quantity}
                 );`)
                 } catch (err) {
-                    console.log(err)
+                    console.log(err.response.data.message)
                 }
             })
             eco_db.query('SELECT * FROM product', function (err, rows, fields) {
@@ -351,7 +365,7 @@ function atualizaBase(res) {
 
         })
     } catch (err) {
-        console.log(err)
+        console.log(err.response.data.message)
     }
 }
 
