@@ -17,7 +17,7 @@ const getProduto = async function (codigo) {
         let dados = await client.get('products', { sku: codigo })
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.log(err.response)
     }
 }
 
@@ -35,7 +35,7 @@ const putProduto = async function (sku, json) {
         let dados = await client.put(`products/${sku}`, json)
         return dados
     } catch (err) {
-        console.log(err.response.data.parameters)
+        console.log(err.response.data.message)
     }
 }
 
@@ -71,7 +71,7 @@ const GetProdutosAtributos = async function (params){
         let dados = await client.get(`products/attributes`, params)
         return dados
     } catch (err){
-        console.log(err.response.data.message)
+        console.log(err.response)
     }
 }
 
@@ -84,6 +84,35 @@ const putProdutosAtributos = async function (aributeCode, params){
     }
 }
 
+const postProdutosAtributos = async function (params){
+    try {
+        let dados = await client.post(`products/attributes`, params)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
+
+const getGrupoAtributosSet = async function (params){
+    try {
+        let dados = await client.get(`products/attribute-sets/sets/list`, params)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
+
+const postGrupoAtributos = async function (params){
+    try {
+        let dados = await client.post(`products/attribute-sets`, params)
+        return dados
+    } catch (err){
+        console.log(err.response.data.message)
+    }
+}
+
+
+
 module.exports = { 
     client, 
     getProdutos, 
@@ -94,5 +123,8 @@ module.exports = {
     addProdutoSimple, 
     ProdutoConfigurableOptions, 
     GetProdutosAtributos, 
-    putProdutosAtributos
+    putProdutosAtributos,
+    postProdutosAtributos,
+    getGrupoAtributosSet,
+    postGrupoAtributos
 }

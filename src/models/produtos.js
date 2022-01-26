@@ -1,8 +1,9 @@
 const db = require("../../config/db").hardness_db
 const eco_db = require("../../config/db").eco_db
+const prod_mag = require("../integracao/produtos")
 const CronJob = require('cron').CronJob
 
-function postProduto(res, obj, img_json = '') {
+function postProduto(res, obj, img_json = '', img_princi = '') {
     cat = obj.categ
     cate = ''
     x = 1
@@ -56,7 +57,8 @@ function postProduto(res, obj, img_json = '') {
                 reserved_quantity,
                 actual_quantity,
                 categories_id,
-                img
+                img,
+                img_configuravel
             ) VALUES (
                 ${obj.hrd_D009_Id},
                 '${obj.product_code}',
@@ -68,7 +70,8 @@ function postProduto(res, obj, img_json = '') {
                 ${obj.reserved_quantity},
                 ${obj.actual_quantity},
                 ${cate},
-                '${img_json}'
+                '${img_json}',
+                '${img_princi}'
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
@@ -108,9 +111,9 @@ function postProduto(res, obj, img_json = '') {
     }
 }
 
-function putProduto(res, obj, img_json = '') {
-    cat = obj.categ
-    cate = ''
+function putProduto(res, obj, img_json = '', img_princi = '') {
+    var cat = obj.categ
+    var cate = ''
     x = 1
     if (cat.length > 1) {
 
@@ -149,33 +152,74 @@ function putProduto(res, obj, img_json = '') {
                 }
             ]`
     }
-    ativo = 'N'
+    var ativo = 'N'
+    var msg = ''
     if (obj.active) {
-        ativo = 'S'
-    }
-    if (img_json != '') {
-        try {
-            eco_db.query(`
-            UPDATE product SET
-            hrd_D009_Id='${obj.hrd_D009_Id}',
-            product_code='${obj.product_code}',
-            nome='${obj.nome}',
-            cost_unit='${obj.cost_unit}',
-            ipv='${obj.ipv}',
-            price_unit='${obj.price_unit}',
-            local_quantity='${obj.local_quantity}',
-            reserved_quantity='${obj.reserved_quantity}',
-            actual_quantity='${obj.actual_quantity}',
-            active='${ativo}',
-            categories_id='${cate}',
-            img = '${img_json}'
-            WHERE  id=${obj.id};`)
-            getProduto(res, "Produto atualizado!")
+        eco_db.query(`SELECT active FROM product WHERE product_code = "${obj.product_code}" AND D024Id = "${obj.D024Id}" AND hrd_D009_Id != "${obj.hrd_D009_Id}"`, function (err, rows, fields) {
 
-        } catch (err) {
-            console.log(err.response.data.message)
-            getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
-        }
+            // console.log(rows.length)
+            if (rows.length > 0) {
+                rows.forEach(element => {
+                    if (element.active == 'S') {
+                        msg = 'O sistema não permite ativar dois produtos iguais!'
+                    } else {
+                        ativo = 'S'
+                        msg = 'Produto atualizado!'
+                    }
+                })
+            } else {
+                ativo = 'S'
+                msg = 'Produto atualizado!'
+            }
+
+            if (img_json != '') {
+                try {
+                    eco_db.query(`
+                    UPDATE product SET
+                    hrd_D009_Id='${obj.hrd_D009_Id}',
+                    product_code='${obj.product_code}',
+                    nome='${obj.nome}',
+                    cost_unit='${obj.cost_unit}',
+                    ipv='${obj.ipv}',
+                    price_unit='${obj.price_unit}',
+                    local_quantity='${obj.local_quantity}',
+                    reserved_quantity='${obj.reserved_quantity}',
+                    actual_quantity='${obj.actual_quantity}',
+                    active='${ativo}',
+                    categories_id='${cate}',
+                    img = '${img_json}',
+                    img_configuravel = '${img_princi}'
+                    WHERE  id=${obj.id};`)
+                    getProduto(res, msg)
+
+                } catch (err) {
+                    console.log(err.response)
+                    getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+                }
+            } else {
+                try {
+                    eco_db.query(`
+                    UPDATE product SET
+                    hrd_D009_Id='${obj.hrd_D009_Id}',
+                    product_code='${obj.product_code}',
+                    nome='${obj.nome}',
+                    cost_unit='${obj.cost_unit}',
+                    ipv='${obj.ipv}',
+                    price_unit='${obj.price_unit}',
+                    local_quantity='${obj.local_quantity}',
+                    reserved_quantity='${obj.reserved_quantity}',
+                    actual_quantity='${obj.actual_quantity}',
+                    active='${ativo}',
+                    categories_id='${cate}'
+                    WHERE  id=${obj.id};`)
+                    getProduto(res, msg)
+
+                } catch (err) {
+                    console.log(err.response.data.message)
+                    getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+                }
+            }
+        })
     } else {
         try {
             eco_db.query(`
@@ -192,14 +236,13 @@ function putProduto(res, obj, img_json = '') {
             active='${ativo}',
             categories_id='${cate}'
             WHERE  id=${obj.id};`)
-            getProduto(res, "Produto atualizado!")
+            getProduto(res, msg)
 
         } catch (err) {
             console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
-
 }
 
 function getProduto(res, msg_ = '') {
@@ -211,19 +254,28 @@ function getProduto(res, msg_ = '') {
     })
 }
 
+function atualizaValorProdLoja(price, id) {
+    
+    eco_db.query(`
+    UPDATE product SET
+    price_loja = '${price}'
+    WHERE  id=${id};`)
+}
+//atualizaValorProdLoja()
+
 function deleteProduto(id) {
     eco_db.query(`DELETE FROM product where id = ${id}`)
 }
 
-function putImg(res, id, img) {
+function putImg(id, img) {
     try {
         eco_db.query(`
     UPDATE product SET
     img = '${img}'
     WHERE  id=${id};`)
-        getProduto(res, "Imagem atualizada!")
+        //getProduto(res, "Imagem atualizada!")
     } catch (err) {
-        getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+        //getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
     }
 
 }
@@ -234,30 +286,35 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
     try {
         db.query(`SELECT
-            D009_Id hrd_D009_Id,
-            D49.D049_Id,
-            D1.D001_Codigo_Produto product_code,
-            D2.D002_Descricao_Produto nome,
-            D24.D024_Nome_Empresa fornecedor,
-            D009_Custo(D009_Id, 3) cost_unit,
-            1.50 ipv,
-            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
-            D009_Quantidade_Estoque_Real local_quantity,
-            0 reserved_quantity,
-            D009_Quantidade_Estoque_Real actual_quantity
-        FROM D009 D9
-        INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
-        INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
-        INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
-        INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
-        WHERE
-            D009_C004_Id = 1
-            AND D1.D001_C008_Id = 1
-            AND D1.D001_Data_Cadastro != '000-00-00'
-            AND D009_Custo(D009_Id, 3) > 0
-            AND D009_Quantidade_Estoque > 0
-        GROUP BY D009_Id
-        ORDER BY D009_Quantidade_Estoque DESC
+        D009_Id hrd_D009_Id,
+        D49.D049_Id,
+        D24.D024_Id,
+        D1.D001_Codigo_Produto product_code,
+        D2.D002_Descricao_Produto nome,
+        CONCAT( D24.D024_Nome_Empresa,' - ', IFNULL(D24_B.D024_Nome_Empresa,'')) AS fornecedor,
+        D1.D001_Peso_Unitario_Kg peso_uni_kg,
+        D009_Custo(D009_Id, 3) cost_unit,
+        1.50 ipv,
+        SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
+        D009_Quantidade_Estoque_Real local_quantity,
+        0 reserved_quantity,
+        D009_Quantidade_Estoque_Real actual_quantity
+     FROM D009 D9
+     INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
+     INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
+     INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
+     INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
+     LEFT JOIN D024 D24_B ON D24_B.D024_Id = D049_Trade_Id
+     WHERE
+        D009_C004_Id = 1
+        AND D1.D001_C008_Id = 1
+        AND D1.D001_Data_Cadastro != '0000-00-00'
+        AND D009_Custo(D009_Id, 3) > 0
+        AND D009_Quantidade_Estoque > 0
+         AND D49.D049_Flag_Ativo = 'S'
+        AND D24.D024_Data_Irregular = '0000-00-00'
+     GROUP BY D009_Id
+     ORDER BY D009_Quantidade_Estoque DESC
         `, function (err, rows, fields) {
             rows.forEach(element => {
                 try {
@@ -265,8 +322,10 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
                     hrd_D009_Id,
                     product_code,
                     D049Id,
+                    D024Id,
                     nome,
                     fornecedor,
+                    peso_uni_kg,
                     cost_unit,
                     ipv,
                     price_unit,
@@ -277,8 +336,10 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
                     ${element.hrd_D009_Id},
                     '${element.product_code}',
                     '${element.D049_Id}',
+                    '${element.D024_Id}',
                     '${element.nome}',
                     '${element.fornecedor}',
+                    '${element.peso_uni_kg}',
                     ${element.cost_unit},
                     ${element.ipv},
                     ${element.price_unit},
@@ -300,30 +361,35 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 function atualizaBase(res) {
     try {
         db.query(`SELECT
-            D009_Id hrd_D009_Id,
-            D49.D049_Id,
-            D1.D001_Codigo_Produto product_code,
-            D2.D002_Descricao_Produto nome,
-            D24.D024_Nome_Empresa fornecedor,
-            D009_Custo(D009_Id, 3) cost_unit,
-            1.50 ipv,
-            SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
-            D009_Quantidade_Estoque_Real local_quantity,
-            0 reserved_quantity,
-            D009_Quantidade_Estoque_Real actual_quantity
-        FROM D009 D9
-        INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
-        INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
-        INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
-        INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
-        WHERE
-            D009_C004_Id = 1
-            AND D1.D001_C008_Id = 1
-            AND D1.D001_Data_Cadastro != '000-00-00'
-            AND D009_Custo(D009_Id, 3) > 0
-            AND D009_Quantidade_Estoque > 0
-        GROUP BY D009_Id
-        ORDER BY D009_Quantidade_Estoque DESC
+        D009_Id hrd_D009_Id,
+        D49.D049_Id,
+        D24.D024_Id,
+        D1.D001_Codigo_Produto product_code,
+        D2.D002_Descricao_Produto nome,
+        CONCAT( D24.D024_Nome_Empresa,' - ', IFNULL(D24_B.D024_Nome_Empresa,'')) AS fornecedor,
+        D1.D001_Peso_Unitario_Kg peso_uni_kg,
+        D009_Custo(D009_Id, 3) cost_unit,
+        1.50 ipv,
+        SUM(D009_Custo(D009_Id, 3) * 1.5) price_unit,
+        D009_Quantidade_Estoque_Real local_quantity,
+        0 reserved_quantity,
+        D009_Quantidade_Estoque_Real actual_quantity
+     FROM D009 D9
+     INNER JOIN D049 D49 ON D049_Id = D009_D049_Id
+     INNER JOIN D001 D1 ON D001_Id = D049_D001_Id
+     INNER JOIN D002 D2 ON D002_Id = D001_D002_Id
+     INNER JOIN D024 D24 ON D024_Id = D049_D024_Id
+     LEFT JOIN D024 D24_B ON D24_B.D024_Id = D049_Trade_Id
+     WHERE
+        D009_C004_Id = 1
+        AND D1.D001_C008_Id = 1
+        AND D1.D001_Data_Cadastro != '0000-00-00'
+        AND D009_Custo(D009_Id, 3) > 0
+        AND D009_Quantidade_Estoque > 0
+         AND D49.D049_Flag_Ativo = 'S'
+        AND D24.D024_Data_Irregular = '0000-00-00'
+     GROUP BY D009_Id
+     ORDER BY D009_Quantidade_Estoque DESC
         `, function (err, rows, fields) {
             rows.forEach(element => {
                 try {
@@ -331,8 +397,10 @@ function atualizaBase(res) {
                     hrd_D009_Id,
                     product_code,
                     D049Id,
+                    D024Id,
                     nome,
                     fornecedor,
+                    peso_uni_kg,
                     cost_unit,
                     ipv,
                     price_unit,
@@ -343,8 +411,10 @@ function atualizaBase(res) {
                     ${element.hrd_D009_Id},
                     '${element.product_code}',
                     '${element.D049_Id}',
+                    '${element.D024_Id}',
                     '${element.nome}',
                     '${element.fornecedor}',
+                    '${element.peso_uni_kg}',
                     ${element.cost_unit},
                     ${element.ipv},
                     ${element.price_unit},
@@ -377,3 +447,4 @@ module.exports.getProduto = getProduto
 module.exports.deleteProduto = deleteProduto
 module.exports.atualizaBase = atualizaBase
 module.exports.putImg = putImg
+module.exports.atualizaValorProdLoja = atualizaValorProdLoja

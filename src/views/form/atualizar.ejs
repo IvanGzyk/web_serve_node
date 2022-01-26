@@ -16,6 +16,7 @@
                 <form action="/form_atualizar" method="POST" enctype="multipart/form-data">
                     <h4 class="mb-sm-0 font-size-18">Cadastro de Produtos E-Commerce</h4>
                     <input type="hidden" name="id" value="<%=produtos[0].id %>">
+                    <input type="hidden" name="D024Id"  value="<%=produtos[0].D024Id %>" readonly></td>
                     <div class="table-responsive" id="crudTableEdit">
                         <table
                             class="table table-hover table-striped table-condensed table-sm table-bordered table-nowrap align-middle">
@@ -96,9 +97,15 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="p-1 fw-bold text-left">Imagem</td>
+                                    <td class="p-1 fw-bold text-left">Foto Principal</td>
                                     <td class="p-1 fw-bold text-left">
-                                        <input class="form-control form-control-sm" type="file" name="foto" multiple value=""></td>
+                                        <input class="form-control form-control-sm" type="file" name="imagem">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1 fw-bold text-left">Fotos do Produto</td>
+                                    <td class="p-1 fw-bold text-left">
+                                        <input class="form-control form-control-sm" type="file" name="foto" multiple></td>
                                 </tr>
                             </tbody>
                         </table>

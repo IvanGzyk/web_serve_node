@@ -15,45 +15,52 @@ module.exports = function (application) {
                 .toString('hex')
             cb(null, `${novoNomeArquivo}.${extensaoArquivo}`)
         }
-    });
+    })
 
-    const upload = multer({storage : storage, limits: {
-        fileSize : 1024 * 1024 * 5 
-    }})
-    
+    // const upload = multer({storage : storage, limits: {
+    //     fileSize : 1024 * 1024 * 5 
+    // }})
+
+    const upload = multer({ storage: storage })
+
     application.get('/produtos', function (req, res) {
-        produto.produtos(application, req, res)
+        application.src.controllers.Produtos.produtos(application, req, res)
+        //produto.produtos(application, req, res)
     })
 
     application.get('/form', function (req, res) {
-        produto.novo(req, res)
+        application.src.controllers.Produtos.novo(req, res)
     })
 
-    application.post('/salva_form', upload.array("foto", 10), (req, res) => {
-        produto.salva_form(req, res)
+    // application.post('/salva_form', upload.array("foto", 10), (req, res) => {
+    //     produto.salva_form(req, res)
+    // })
+
+    application.post('/salva_form', upload.fields([{ name: 'foto', maxCount: 10 }, { name: 'imagem' }]), (req, res, next) => {
+        application.src.controllers.Produtos.salva_form(req, res, next)
     })
 
     application.get('/form_update/:id', function (req, res) {
-        produto.form_atualiza(req, res)
+        application.src.controllers.Produtos.form_atualiza(req, res)
     })
 
-    application.post('/form_atualizar', upload.array("foto", 10), (req, res) => {
-        produto.atualiza(req, res)
+    application.post('/form_atualizar', upload.fields([{ name: 'foto', maxCount: 10 }, { name: 'imagem'}]), (req, res, next) => {
+        application.src.controllers.Produtos.atualiza(req, res)
     })
 
-    application.get('/delete/:id', function (req, res) {
-        produto.apagar(req, res)
+    application.get('/delete/:id', function (req, res, next) {
+        application.src.controllers.Produtos.apagar(req, res)
     })
 
     application.get('/cadastra', function (req, res) {
-        produto.atualiza_mage(req, res)
+        application.src.controllers.Produtos.atualiza_mage(req, res)
     })
 
     application.get('/atualiza_base', function (req, res) {
-        produto.atualiza_base(req, res)
+        application.src.controllers.Produtos.atualiza_base(req, res)
     })
 
     application.get('/cad_unic/:D009_Id/:sku', function (req, res) {
-        produto.cad_prod_unic(req, res)
+        application.src.controllers.Produtos.cad_prod_unic(req, res)
     })
 }

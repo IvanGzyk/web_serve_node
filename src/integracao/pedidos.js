@@ -93,7 +93,7 @@ function getDados(dados) {
                     dados.forEach(array => {
                         Adress.updateAddress(End, dados.entity_id)
                     })
-                } else if (dados.length == 0){
+                } else if (dados.length == 0) {
                     dados.forEach(array => {
                         Adress.createAddress(End)
                     })
@@ -155,23 +155,26 @@ function getDados(dados) {
     return dados
 }
 
-// const job = new CronJob('0 15 * * * *', () => {
 
-//     data_atual = funcoes.dataAtual()
-//     data_inicio = funcoes.dataDeInicio(-30)
+const job = new CronJob('0 */15 * * * *', () => {
+    data_atual = funcoes.dataAtual()
+    data_inicio = funcoes.dataDeInicio(-30)
 
-//     let params = {
-//         $from: data_inicio,
-//         $to: data_atual,
-//         $sort: {
-//             "created_at": "desc"
-//         },
-//         $perPage: 200,
-//         $page: 1
-//     }
-//     getOrders(params).then(data => data.data).then(dados => getDados(dados))
-//     console.log('Pedidos atualizado em: ' + data_atual)
-// }, null, true, 'America/Sao_Paulo')
+    let params = {
+        $from: data_inicio,
+        $to: data_atual,
+        $sort: {
+            "created_at": "desc"
+        },
+        $perPage: 200,
+        $page: 1
+    }
+
+    getOrders(params).then(data => data.data).then(dados => getDados(dados))
+
+    console.log('Pedidos atualizado em: ' + data_atual)
+
+}, null, true, 'America/Sao_Paulo')
 
 function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);

@@ -37,7 +37,7 @@
                         <div class="col-sm-12 mb-3">
                             <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
                             <a class="btn btn-outline-primary" href="/atualiza_base">Atualiza Base de Dados</a>
-                            <a class="btn btn-outline-primary" href="/form">Novo</a>
+                            <!-- <a class="btn btn-outline-primary" href="/form">Novo</a> -->
                             <!-- <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
                     <a href="/form"><i class="bi bi-clipboard-plus"></i></a> -->
                         </div>
@@ -52,6 +52,7 @@
                                         <th class="border border-light border-1 p-1">Custo</th>
                                         <th class="border border-light border-1 p-1">IPV</th>
                                         <th class="border border-light border-1 p-1">Preço</th>
+                                        <th class="border border-light border-1 p-1">Preço Loja</th>
                                         <th class="border border-light border-1 p-1">Qtd Local</th>
                                         <th class="border border-light border-1 p-1">Qtd Reservada</th>
                                         <th class="border border-light border-1 p-1">Qtd Ec</th>
@@ -80,6 +81,9 @@
                                             </td>
                                             <td class="p-1">
                                                 <%=element.price_unit %>
+                                            </td>
+                                            <td class="p-1">
+                                                <%=element.price_loja %>
                                             </td>
                                             <td class="p-1">
                                                 <%=element.local_quantity %>

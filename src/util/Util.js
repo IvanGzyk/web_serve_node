@@ -84,5 +84,27 @@ class Util {
         })
         return img_json
     }
+
+    atributo(atri){
+        var attribute
+        var atributo = atri.data.items
+        atributo.forEach(atrib => {
+            attribute = atrib
+        })
+        return attribute
+    }
+    pegaProduto(dados){
+        var items = dados.data.items
+        return items
+    }
+
+    cadastraProduto(dados) {
+        return dados
+    }
+
+    atualizaProduto(dados){
+        return dados
+    }
+    
 }
 module.exports.Util = new Util()
