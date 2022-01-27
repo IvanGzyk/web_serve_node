@@ -24,6 +24,7 @@ const getProduto = async function (codigo) {
 const postProduto = async function (json) {
     try {
         let dados = await client.post('products', json)
+        //console.log(dados)
         return dados
     } catch (err) {
         console.log(err.response.data.message)

@@ -35,18 +35,18 @@ async function atributos(para) {
 }
 
 async function cadastraAtributo(attribute_id, fornecedor) {
-    jsonAtribute = `{
-        "attribute":{
-            "position":0,
-            "used_in_product_listing":"true",
-            "attribute_id":${attribute_id},
-            "options":[
+    jsonAtribute = {
+        "attribute": {
+            "position": 0,
+            "used_in_product_listing": "true",
+            "attribute_id": attribute_id,
+            "options": [
                 {
-                    "label":"${fornecedor}"
+                    "label": "${fornecedor}"
                 }
             ]
         }
-    }`
+    }
     await prod_mag.putProdutosAtributos(attribute_id, jsonAtribute)
 }
 
@@ -56,11 +56,13 @@ async function pegaProduto(sku) {
 }
 
 async function cadastraProduto(params) {
+    //console.log(params)
     dados = await prod_mag.postProduto(params)
-    return funcoes.cadastraProduto(dados)
+    return funcoes.retornaData(dados)
 }
 
 async function cadastraProdutoConfiguravel(sku, option) {
+    //console.log(sku +' - '+option)
     if (option != undefined) {
         dados = await prod_mag.ProdutoConfigurableOptions(sku, option)
     }
@@ -68,14 +70,16 @@ async function cadastraProdutoConfiguravel(sku, option) {
 
 async function atualizaProduto(sku, params) {
     dados = await prod_mag.putProduto(sku, params)
-    return funcoes.atualizaProduto(dados)
+    return funcoes.retornaData(dados)
 }
 
 async function viculaProduto(sku, params) {
-    dados = await prod_mag.addProdutoSimple(sku, params)
+    //console.log(sku+' - '+ params)
+    dados = await prod_mag.addProdutoSimple(sku, params)//.then(console.log)
 }
 
 async function main7(element, sku) {
+    //console.log(`{"childSku": "${sku}"}`)
     await viculaProduto(element.product_code, `{"childSku": "${sku}"}`)
 }
 
@@ -123,6 +127,7 @@ async function main5(element, json, sku) {
 }
 
 async function main4(element, options, json, sku) {
+    //console.log(element.product_code+" - "+options)
     await cadastraProdutoConfiguravel(element.product_code, options)
     main5(element, json, sku)
 }
@@ -145,7 +150,6 @@ async function main3(json_configurable, element, options, json, sku) {
 async function main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku) {
 
     await pegaProduto(element.product_code).then(data => {
-        //console.log(data) OK
         var json_configurable
         var options
         if (data.length == 0) {
@@ -154,7 +158,7 @@ async function main2(element, name, id_d009, category, qty, img_configuravel, at
                 {
                     "sku": "${element.product_code}",
                     "name": "${name}-${id_d009}",
-                    "attribute_set_id": 15,
+                    "attribute_set_id": 31,
                     "status": 1,
                     "visibility": 4,
                     "type_id": "configurable",
@@ -204,6 +208,7 @@ async function main(element) {
         $page: 1
     }
     await atributos(para).then(atrib => {
+        //console.log(atrib)
         var forn = element.fornecedor.split(" - ")
         fornecedor = forn[0].split(" ")
         fornecedor = fornecedor[0]
@@ -266,7 +271,7 @@ async function main(element) {
                 "product":{
                     "sku":"${sku}",
                     "name":"${name}-${sku}",
-                    "attribute_set_id":15,
+                    "attribute_set_id": 31,
                     "price":${price},
                     "status":${ativo},
                     "visibility": 1,
@@ -305,6 +310,7 @@ async function main(element) {
                 }
             }`
         }
+        //console.log(json)
         main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku)
     })
 }

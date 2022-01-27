@@ -86,6 +86,7 @@ class Util {
     }
 
     atributo(atri){
+        //console.log(atri.data.items)
         var attribute
         var atributo = atri.data.items
         atributo.forEach(atrib => {
@@ -98,13 +99,14 @@ class Util {
         return items
     }
 
-    cadastraProduto(dados) {
-        return dados
-    }
-
-    atualizaProduto(dados){
-        return dados
+    atributoSet(atrib){
+        var data = atrib.data
+        var items = data.items
+        return items
     }
     
+    retornaData(dados){
+        return dados
+    }
 }
 module.exports.Util = new Util()

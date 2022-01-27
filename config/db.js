@@ -5,7 +5,7 @@ const mysql = require('mysql2')
 const sequelize = new Sequelize('api', 'root', 'root', {
     host: '192.168.0.241',
     dialect: 'mysql'
-})
+});
 
 // conexão api
 const connection = mysql.createConnection({
@@ -31,11 +31,12 @@ const hardness_db = mysql.createConnection({
     password: 'h@rdness!web',
     database: 'E003'
 });
+
 setInterval(function () {
     connection.query('SELECT 1')
     eco_db.query('SELECT 1')
     hardness_db.query('SELECT 1')
-}, 5000)
+}, 5000);
 
 
 
