@@ -3,6 +3,7 @@ const Categorias = require('../integracao/categorias')
 const fs = require('fs');
 const db_eco = require("../../config/db")
 const prod_mag = require("../integracao/produtos")
+const atribu = require("../integracao/atributos")
 const funcoes = require('../util/Util').Util
 const { exit } = require('process')
 
@@ -30,135 +31,180 @@ var options
 
 
 async function atributos(para) {
-    atrib = await prod_mag.GetProdutosAtributos(para)
-    return funcoes.atributo(atrib)
+    try {
+        atrib = await prod_mag.GetProdutosAtributos(para)
+        return funcoes.atributo(atrib)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function cadastraAtributo(attribute_id, fornecedor) {
-    jsonAtribute = {
+    try {
+        jsonAtribute = `{
         "attribute": {
             "position": 0,
             "used_in_product_listing": "true",
-            "attribute_id": attribute_id,
+            "attribute_id": ${attribute_id},
             "options": [
                 {
                     "label": "${fornecedor}"
                 }
             ]
         }
+    }`
+        await prod_mag.putProdutosAtributos(attribute_id, jsonAtribute)
+    } catch (error) {
+        console.log(error)
     }
-    await prod_mag.putProdutosAtributos(attribute_id, jsonAtribute)
 }
 
 async function pegaProduto(sku) {
-    dados = await prod_mag.getProduto(sku)
-    return funcoes.pegaProduto(dados)
+    try {
+        dados = await prod_mag.getProduto(sku)
+        return funcoes.pegaProduto(dados)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function cadastraProduto(params) {
-    //console.log(params)
-    dados = await prod_mag.postProduto(params)
-    return funcoes.retornaData(dados)
+    try {
+        dados = await prod_mag.postProduto(params)
+        return funcoes.retornaData(dados)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function cadastraProdutoConfiguravel(sku, option) {
-    //console.log(sku +' - '+option)
-    if (option != undefined) {
-        dados = await prod_mag.ProdutoConfigurableOptions(sku, option)
+    try {
+        if (option != undefined) {
+            dados = await prod_mag.ProdutoConfigurableOptions(sku, option)
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
 
 async function atualizaProduto(sku, params) {
-    dados = await prod_mag.putProduto(sku, params)
-    return funcoes.retornaData(dados)
+    try {
+        dados = await prod_mag.putProduto(sku, params)
+        return funcoes.retornaData(dados)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function viculaProduto(sku, params) {
-    //console.log(sku+' - '+ params)
-    dados = await prod_mag.addProdutoSimple(sku, params)//.then(console.log)
+    try {
+        dados = await prod_mag.addProdutoSimple(sku, params)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function main7(element, sku) {
-    //console.log(`{"childSku": "${sku}"}`)
-    await viculaProduto(element.product_code, `{"childSku": "${sku}"}`)
+    try {
+        await viculaProduto(element.product_code, `{"childSku": "${sku}"}`)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function main6(items, element, json, sku) {
-    if (items.length != 0) {
-        try {
-            await atualizaProduto(sku, json).then(data => {
+    try {
+        if (items.length != 0) {
+            try {
+                await atualizaProduto(sku, json).then(data => {
+                    console.log('atualiza')
 
-                let dados = data.data
-                let img = dados.media_gallery_entries
-                var img_local = element.img
-                img_local = img_local.replace('"media_gallery_entries":', '')
-                img_local = JSON.parse(img_local)
-                const img_json = funcoes.salva_id_img(img_local, img)
-                ProdutoModel.putImg(element.id, img_json)
-                main7(element, sku)
-                ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
-            })
-        } catch (error) {
-            console.log("Produto não encontrado! " + error)
+                    let dados = data.data
+                    let img = dados.media_gallery_entries
+                    var img_local = element.img
+                    img_local = img_local.replace('"media_gallery_entries":', '')
+                    img_local = JSON.parse(img_local)
+                    const img_json = funcoes.salva_id_img(img_local, img)
+                    ProdutoModel.putImg(element.id, img_json)
+                    main7(element, sku)
+                    ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                })
+            } catch (error) {
+                console.log("Produto não encontrado! " + error)
+            }
+        } else if (element.active != 'N') {
+            console.log('cadastra')
+            try {
+                await cadastraProduto(json).then(data => {
+                    let dados = data.data
+                    let img = dados.media_gallery_entries
+                    var img_local = element.img
+                    img_local = img_local.replace('"media_gallery_entries":', '')
+                    img_local = JSON.parse(img_local)
+                    const img_json = funcoes.salva_id_img(img_local, img)
+                    ProdutoModel.putImg(element.id, img_json)
+                    main7(element, sku)
+                    ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                })
+            } catch (error) {
+                console.log("Produto não encontrado!")
+            }
         }
-    } else if (element.active != 'N') {
-        try {
-            await cadastraProduto(json).then(data => {
-                let dados = data.data
-                let img = dados.media_gallery_entries
-                var img_local = element.img
-                img_local = img_local.replace('"media_gallery_entries":', '')
-                img_local = JSON.parse(img_local)
-                const img_json = funcoes.salva_id_img(img_local, img)
-                ProdutoModel.putImg(element.id, img_json)
-                main7(element, sku)
-                ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
-            })
-        } catch (error) {
-            console.log("Produto não encontrado!")
-        }
+    } catch (error) {
+        console.log(error)
     }
 }
 
 async function main5(element, json, sku) {
-    await pegaProduto(element.product_code).then(items => {
-        main6(items, element, json, sku)
-    })
-}
-
-async function main4(element, options, json, sku) {
-    //console.log(element.product_code+" - "+options)
-    await cadastraProdutoConfiguravel(element.product_code, options)
-    main5(element, json, sku)
-}
-
-async function main3(json_configurable, element, options, json, sku) {
-
-    if (json_configurable != undefined) {
-        try {
-            await cadastraProduto(json_configurable).then(dados => {
-                main4(element, options, json, sku)
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    } else {
-        main4(element, options, json, sku)
+    try {
+        await pegaProduto(element.product_code).then(items => {
+            main6(items, element, json, sku)
+        })
+    } catch (error) {
+        console.log(error)
     }
 }
 
-async function main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku) {
+async function main4(element, options, json, sku) {
+    try {
+        await cadastraProdutoConfiguravel(element.product_code, options)
+        main5(element, json, sku)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-    await pegaProduto(element.product_code).then(data => {
-        var json_configurable
-        var options
-        if (data.length == 0) {
-            json_configurable = `{
+async function main3(json_configurable, element, options, json, sku) {
+    try {
+        if (json_configurable != undefined) {
+            try {
+                await cadastraProduto(json_configurable).then(dados => {
+                    console.log('aqui')
+                    main4(element, options, json, sku)
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            main4(element, options, json, sku)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id) {
+    try {
+        await pegaProduto(element.product_code).then(data => {
+            var json_configurable
+            var options
+            if (data.length == 0) {
+                json_configurable = `{
             "product":
                 {
                     "sku": "${element.product_code}",
                     "name": "${name}-${id_d009}",
-                    "attribute_set_id": 31,
+                    "attribute_set_id": ${atributo_set_id},
                     "status": 1,
                     "visibility": 4,
                     "type_id": "configurable",
@@ -182,7 +228,7 @@ async function main2(element, name, id_d009, category, qty, img_configuravel, at
                     ]
                 }
             }`
-            options = `{
+                options = `{
             "sku": "${element.product_code}",
                 "option": {
                 "attribute_id": "${attribute_id}",
@@ -196,144 +242,175 @@ async function main2(element, name, id_d009, category, qty, img_configuravel, at
                     ]
                 }
             }`
-        }
-        main3(json_configurable, element, options, json, sku)
-    })
+            }
+            main3(json_configurable, element, options, json, sku)
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function main(element) {
+
     let para = {
         $or: [{ "attribute_code": "fornecedor" }],
         $perPage: 200,
         $page: 1
     }
-    await atributos(para).then(atrib => {
-        //console.log(atrib)
-        var forn = element.fornecedor.split(" - ")
-        fornecedor = forn[0].split(" ")
-        fornecedor = fornecedor[0]
-        if (forn.length == 2) {
-            trade = forn[1].split(" ")
-            fornecedor = fornecedor + ' ' + trade[0]
-        }
 
-        attribute_id = atrib.attribute_id
-        options = atrib.options
-        options.forEach(opt => {
-            if (opt.label == fornecedor) {
-                atribFornece = true
+    let fornecedor_set = {
+        $or: [{ "attribute_set_name": "Fornecedor" }],
+        $perPage: 200,
+        $page: 1
+    }
+    try {
+        await atributos(para).then(atrib => {
+            var forn = element.fornecedor.split(" - ")
+            fornecedor = forn[0].split(" ")
+            fornecedor = fornecedor[0]
+            if (forn.length == 2) {
+                trade = forn[1].split(" ")
+                fornecedor = fornecedor + ' ' + trade[0]
             }
-        })
-        if (atribFornece == false) {
-            cadastraAtributo(attribute_id, fornecedor)
-        }
-    })
 
-    await atributos(para).then(atrib => {
-        var forn = element.fornecedor.split(" - ")
-        fornecedor = forn[0].split(" ")
-        fornecedor = fornecedor[0]
-        if (forn.length == 2) {
-            trade = forn[1].split(" ")
-            fornecedor = fornecedor + ' ' + trade[0]
-        }
-        attribute_id = atrib.attribute_id
-        options = atrib.options
-        options.forEach(opt => {
-            if (opt.label == fornecedor) {
-                value_index = opt.value
-            }
-        })
-
-        id_d001 = element.product_code
-        id_d009 = element.hrd_D009_Id
-        id_d049 = element.D049Id
-        sku = element.product_code + '-' + element.hrd_D009_Id
-        name = element.nome
-        price = element.price_unit
-        qty = element.actual_quantity
-        category = element.categories_id
-        ativo = 0
-
-        if (element.active == 'N') {
-            json = `
-                {
-                    "product": {
-                        "status":${ativo}
-                    }
-                }`
-        } else {
-            ativo = 1
-            img = element.img
-            img_configuravel = element.img_configuravel
-            json = `
-            {
-                "product":{
-                    "sku":"${sku}",
-                    "name":"${name}-${sku}",
-                    "attribute_set_id": 31,
-                    "price":${price},
-                    "status":${ativo},
-                    "visibility": 1,
-                    "type_id":"simple",
-                    "weight": "${element.peso_uni_kg}",
-                    "extension_attributes":{
-                        ${category},
-                        "stock_item":{
-                            "qty":${qty},
-                            "is_in_stock":true
-                        }
-                    },
-                    ${img},
-                    "custom_attributes": [
-                        {
-                            "attribute_code": "description",
-                            "value": "Colocar aqui a descrição do produto..."
-                        },
-                        {
-                            "attribute_code": "id_d009",
-                            "value": "${id_d009}"
-                        },
-                        {
-                            "attribute_code": "d001_id",
-                            "value": "${id_d001}"
-                        },
-                        {
-                            "attribute_code": "d049_id",
-                            "value": "${id_d049}"
-                        },
-                        {
-                            "attribute_code": "fornecedor",
-                            "value": "${value_index}"
-                        }
-                    ]
+            attribute_id = atrib.attribute_id
+            options = atrib.options
+            options.forEach(opt => {
+                if (opt.label == fornecedor) {
+                    atribFornece = true
                 }
-            }`
-        }
-        //console.log(json)
-        main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku)
-    })
+            })
+            if (atribFornece == false) {
+                cadastraAtributo(attribute_id, fornecedor)
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+
+    try {
+        await atributos(para).then(atrib => {
+            var forn = element.fornecedor.split(" - ")
+            fornecedor = forn[0].split(" ")
+            fornecedor = fornecedor[0]
+            if (forn.length == 2) {
+                trade = forn[1].split(" ")
+                fornecedor = fornecedor + ' ' + trade[0]
+            }
+            attribute_id = atrib.attribute_id
+            options = atrib.options
+            options.forEach(opt => {
+                if (opt.label == fornecedor) {
+                    value_index = opt.value
+                }
+            })
+
+            id_d001 = element.product_code
+            id_d009 = element.hrd_D009_Id
+            id_d049 = element.D049Id
+            sku = element.product_code + '-' + element.hrd_D009_Id
+            name = element.nome
+            price = element.price_unit
+            qty = element.actual_quantity
+            category = element.categories_id
+            ativo = 0
+
+            atribu.pegaAtributoSet(fornecedor_set).then(item => {
+                if (item.length != 0) {
+                    var atributo_set_id = item[0].attribute_set_id
+                    console.log(atributo_set_id)
+                    if (element.active == 'N') {
+                        json = `
+                            {
+                                "product": {
+                                    "status":${ativo}
+                                }
+                            }`
+                    } else {
+                        ativo = 1
+                        img = element.img
+                        img_configuravel = element.img_configuravel
+
+                        json = `
+                        {
+                            "product":{
+                                "sku":"${sku}",
+                                "name":"${name}-${sku}",
+                                "attribute_set_id": ${atributo_set_id},
+                                "price":${price},
+                                "status":${ativo},
+                                "visibility": 1,
+                                "type_id":"simple",
+                                "weight": "${element.peso_uni_kg}",
+                                "extension_attributes":{
+                                    ${category},
+                                    "stock_item":{
+                                        "qty":${qty},
+                                        "is_in_stock":true
+                                    }
+                                },
+                                ${img},
+                                "custom_attributes": [
+                                    {
+                                        "attribute_code": "description",
+                                        "value": "Colocar aqui a descrição do produto..."
+                                    },
+                                    {
+                                        "attribute_code": "id_d009",
+                                        "value": "${id_d009}"
+                                    },
+                                    {
+                                        "attribute_code": "d001_id",
+                                        "value": "${id_d001}"
+                                    },
+                                    {
+                                        "attribute_code": "d049_id",
+                                        "value": "${id_d049}"
+                                    },
+                                    {
+                                        "attribute_code": "fornecedor",
+                                        "value": "${value_index}"
+                                    }
+                                ]
+                            }
+                        }`
+                    }
+                    main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id)
+                }
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const produtos = async function (application, req, res) {
-    ProdutoModel.getProduto(res)
+    try {
+        ProdutoModel.getProduto(res)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const novo = async function (req, res) {
-    Categorias.getCategorias()
-        .then(dados => dados.data)
-        .then(dados => {
-            res.render("form/cadastro_produto", { categorias: dados.children_data })
-        })
+
+    try {
+        await Categorias.getCategorias()
+            .then(dados => dados.data)
+            .then(dados => {
+                res.render("form/cadastro_produto", { categorias: dados.children_data })
+            })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-const salva_form = async function (req, res) {
+const salva_form = function (req, res) {
     var img_json = ''
     var img_princi = ''
     var x = 1
     var bd = db_eco.eco_db
     req.files.forEach(element => {
-        console.log(element.path)
         var base64str = this.base64_encode(element.path)
         if (x == 1) {
             img_princi = `
@@ -406,19 +483,23 @@ const salva_form = async function (req, res) {
     })
 }
 
-const form_atualiza = async function (req, res) {
+const form_atualiza = function (req, res) {
     Categorias.getCategorias()
         .then(dados => dados.data)
         .then(dados => {
             let params = req.params
             var bd = db_eco.eco_db
-            bd.query('SELECT * FROM product where id = ' + params.id, function (err, rows, fields) {
-                res.render("form/atualizar", { produtos: rows, categorias: dados.children_data })
-            })
+            try {
+                bd.query('SELECT * FROM product where id = ' + params.id, function (err, rows, fields) {
+                    res.render("form/atualizar", { produtos: rows, categorias: dados.children_data })
+                })
+            } catch (error) {
+                console.log(error)
+            }
         })
 }
 
-const atualiza = async function (req, res) {
+const atualiza = function (req, res) {
     const { promisify } = require('util')
     const unlink = promisify(fs.unlink)
     const obj = JSON.parse(JSON.stringify(req.body))
@@ -501,7 +582,6 @@ const atualiza = async function (req, res) {
             }
             if (x == imagems.foto.length) {
                 img_json += `]`
-                console.log('principall: ' + img_princi + ' imagems: ' + img_json)
                 ProdutoModel.putProduto(res, obj, img_json, img_princi)
             }
             x++
@@ -514,48 +594,58 @@ const atualiza = async function (req, res) {
     }
 }
 
-const apagar = async function (req, res) {
+const apagar = function (req, res) {
     let params = req.params
     ProdutoModel.deleteProduto(params.id)
     ProdutoModel.getProduto(res, "Produto Deletado!")
 }
 
-const atualiza_mage = async function (req, res) {
+const atualiza_mage = function (req, res) {
+    try {
+        bd.query('SELECT * FROM product', function (err, rows, fields) {
 
-    bd.query('SELECT * FROM product', function (err, rows, fields) {
-
-        rows.forEach(element => {
-            if (element.active == 'S') {
-                main(element)
-            }
+            rows.forEach(element => {
+                if (element.active == 'S') {
+                    main(element)
+                }
+            })
+            res.render("produtos/produtos", {
+                msg: "Produto atualzado na Loja!!!",
+                produtos: rows
+            })
         })
-        res.render("produtos/produtos", {
-            msg: "Produto atualzado na Loja!!!",
-            produtos: rows
-        })
-    })
+    } catch (error) {
+        HTMLFormControlsCollection(error)
+    }
 }
 
-const cad_prod_unic = async function (req, res) {
+const cad_prod_unic = function (req, res) {
 
     let params = req.params
+    try {
+        bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
 
-    bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
-
-        rows.forEach(element => {
-            main(element)
+            rows.forEach(element => {
+                main(element)
+            })
         })
-    })
-    bd.query('SELECT * FROM product', function (err, rows, fields) {
-        res.render("produtos/produtos", {
-            msg: "Produto atualzado na Loja!!!",
-            produtos: rows
+    } catch (error) {
+        console.log(error)
+    }
+    try {
+        bd.query('SELECT * FROM product', function (err, rows, fields) {
+            res.render("produtos/produtos", {
+                msg: "Produto atualzado na Loja!!!",
+                produtos: rows
+            })
         })
-    })
+    } catch (error) {
+        console.log(error)
+    }
 
 }
 
-const atualiza_base = async function (req, res) {
+const atualiza_base = function (req, res) {
     ProdutoModel.atualizaBase(res)
 }
 

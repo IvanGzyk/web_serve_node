@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
 
 /** Cria a tabela caso não exista */
@@ -61,22 +61,26 @@ const Payment = db.define('api_payment', {
         type: Sequelize.INTEGER
     }
 },
-{
-    indexes: [
-        {
-            unique: true,
-            fields: ['entity_id']
-        }
-    ]
-}
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ['entity_id']
+            }
+        ]
+    }
 )
-Payment.sync()
+Payment.sync({ alter: true })
 
 /** Cria novo Payment*/
 function createPayment(array) {
-    Payment.create(
-        array
-    )
+    try {
+        Payment.create(
+            array
+        )
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 /**Traz Payment especifico */
@@ -107,12 +111,12 @@ async function getPayments() {
 async function updatePayment(array, id_) {
     try {
         const payment = await Payment.update(
-            array, 
+            array,
             {
-            where: {
-                id: id_
-            }
-        })
+                where: {
+                    id: id_
+                }
+            })
         //return payment
     } catch (error) {
         console.log(error)
@@ -120,14 +124,14 @@ async function updatePayment(array, id_) {
 }
 
 /**Deleta Payment especifico */
-async function deletePayment(id_){
-    try{
+async function deletePayment(id_) {
+    try {
         await Payment.destroy({
-            where:{
+            where: {
                 id: id_
             }
         })
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

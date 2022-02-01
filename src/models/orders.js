@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
 
 /** Cria a tabela caso não exista */
@@ -411,7 +411,7 @@ const Oreder = db.define('api_orders', {
     billing_address: {
         type: Sequelize.JSON
     },
-    oreder: {
+    order: {
         type: Sequelize.JSON
     },
     payment: {
@@ -424,21 +424,25 @@ const Oreder = db.define('api_orders', {
         type: Sequelize.JSON
     }
 },
-{
-    indexes: [
-        {
-            unique: true,
-            fields: ['entity_id']
-        }
-    ]
-})
-Oreder.sync()
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ['entity_id']
+            }
+        ]
+    })
+Oreder.sync({ alter: true })
 
 /**Cria nova order */
-function createOreder(array){
-    Oreder.create(
-        array
-    )
+function createOreder(array) {
+    try {
+        Oreder.create(
+            array
+        )
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 /**Traz Oreder especifico */
@@ -469,12 +473,12 @@ async function getOreders() {
 async function updateOreder(array, id_) {
     try {
         const oreder = await Oreder.update(
-            array, 
+            array,
             {
-            where: {
-                id: id_
-            }
-        })
+                where: {
+                    id: id_
+                }
+            })
         //return oreder
     } catch (error) {
         console.log(error)
@@ -482,14 +486,14 @@ async function updateOreder(array, id_) {
 }
 
 /**Deleta Oreder especifico */
-async function deleteOreder(id_){
-    try{
+async function deleteOreder(id_) {
+    try {
         await Oreder.destroy({
-            where:{
+            where: {
                 id: id_
             }
         })
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

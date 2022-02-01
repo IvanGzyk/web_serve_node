@@ -41,7 +41,7 @@ async function getPag(id) {
         let dados = Payment.getPayment(id)
         return dados
     } catch (err) {
-        //console.log(err)
+        console.log(err)
     }
 }
 
@@ -55,7 +55,7 @@ async function getPedidos(id) {
 }
 
 function getDados(dados) {
-
+console.log(dados)
     const Pedidos = dados['items']
     if (Pedidos.length > 0) {
         Pedidos.forEach(element => {
@@ -86,7 +86,6 @@ function getDados(dados) {
             })
 
             const End = element.billing_address
-            //console.log(End.entity_id)
             getAdress(End.entity_id).then(dados => {
                 console.log(dados.length)
                 if (dados.length != 0) {
@@ -155,10 +154,9 @@ function getDados(dados) {
     return dados
 }
 
-
-const job = new CronJob('0 */15 * * * *', () => {
+const job = new CronJob('30 */1 * * * *', () => {
     data_atual = funcoes.dataAtual()
-    data_inicio = funcoes.dataDeInicio(-30)
+    data_inicio = funcoes.dataDeInicio(-5)
 
     let params = {
         $from: data_inicio,
@@ -175,22 +173,3 @@ const job = new CronJob('0 */15 * * * *', () => {
     console.log('Pedidos atualizado em: ' + data_atual)
 
 }, null, true, 'America/Sao_Paulo')
-
-function addMinutes(date, minutes) {
-    return new Date(date.getTime() + minutes * 60000);
-}
-// const teste = new CronJob('*/15 * * * * *', () => {
-//     data_atual = funcoes.dataAtual()
-//     data_inicio = funcoes.dataDeInicio(-30)
-
-//     let params = {
-//         $from: data_inicio,
-//         $to: data_atual,
-//         $sort: {
-//             "created_at": "desc"
-//         },
-//         $perPage: 200,
-//         $page: 1
-//     }
-//     getOrders(params).then(data => data.data).then(data => data.items).then(console.log)
-// }, null, true, 'America/Sao_Paulo')

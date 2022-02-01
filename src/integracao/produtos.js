@@ -1,5 +1,4 @@
 const mage = require("../../config/conexao_mage")
-
 const client = mage.client
 
 
@@ -22,12 +21,12 @@ const getProduto = async function (codigo) {
 }
 
 const postProduto = async function (json) {
+    console.log(json)
     try {
-        let dados = await client.post('products', json)
-        //console.log(dados)
+        let dados = await client.post('products', json)//.then(console.log)
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.log(err.response)
     }
 }
 

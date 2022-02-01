@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
 
 /** Cria a tabela caso não exista */
@@ -157,27 +157,31 @@ const item = db.define('api_items', {
         type: Sequelize.JSON
     }
 },
-{
-    indexes: [
-        {
-            unique: true,
-            fields: ['order_id']
-        }
-    ]
-})
-item.sync()
+    {
+        indexes: [
+            {
+                unique: true,
+                fields: ['order_id']
+            }
+        ]
+    })
+item.sync({ alter: true })
 
 /** Cria novo items*/
 function createItems(array) {
-    item.create(
-        array
-    )
+    try {
+        item.create(
+            array
+        )
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 /**Traz items especifico */
 async function getItem(id_order) {
     try {
-        const ite = item.findAll({
+        const ite = await item.findAll({
             where: {
                 order_id: [id_order]
             }
@@ -191,7 +195,7 @@ async function getItem(id_order) {
 /**Traz todos os itemss */
 async function getItems() {
     try {
-        const items = item.findAll()
+        const items = await item.findAll()
         return items
     } catch (error) {
         console.log(error)
@@ -202,26 +206,26 @@ async function getItems() {
 async function updateItems(array, id_) {
     try {
         await item.update(
-            array, 
+            array,
             {
-            where: {
-                id: id_
-            }
-        })
+                where: {
+                    id: id_
+                }
+            })
     } catch (error) {
         console.log(error)
     }
 }
 
 /**Deleta items especifico */
-async function deleteItems(id_){
-    try{
+async function deleteItems(id_) {
+    try {
         await item.destroy({
-            where:{
+            where: {
                 id: id_
             }
         })
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

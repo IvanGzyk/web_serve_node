@@ -8,31 +8,26 @@ let fornecedor_set = {
     $page: 1
 }
 
-async function pegaAtributoSet(params) {
+pegaAtributoSet = async function (params) {
     atrib = await prod_mag.getGrupoAtributosSet(params)
     return funcoes.atributoSet(atrib)
 }
 
-async function pegaAtributo(params) {
+pegaAtributo = async function (params) {
     atrib = await prod_mag.GetProdutosAtributos(params)
     return funcoes.atributoSet(atrib)
 }
 
-async function criaGrupoAtributos(params) {
+criaGrupoAtributos = async function (params) {
     await prod_mag.postGrupoAtributos(params).then(data => {
-        // console.log('lihna 18')
-        // console.log(data)
         attribute_set_id = data.attribute_set_id
     })
 }
-async function cadastraAtributoProduto(params) {
+cadastraAtributoProduto = async function (params) {
     var data = await prod_mag.postProdutosAtributos(params)
     return funcoes.retornaData(data)
 }
-
 pegaAtributoSet(fornecedor_set).then(item => {
-    // console.log('lihna 29')
-    // console.log(item)
     if (item.length == 0) {
         var grup_atributos = {
             "skeletonId": 4,
@@ -92,7 +87,7 @@ pegaAtributoSet(fornecedor_set).then(item => {
         criaGrupoAtributos(grup_atributos)
         cadastraAtributoProduto(jsonAtribute).then(data => {
             // console.log('lihna 75')
-            // console.log(data)
+            //console.log(data)
             if (data != undefined) {
                 data = data.data
                 attribute_id = data.attribute_id
@@ -108,6 +103,14 @@ pegaAtributoSet(fornecedor_set).then(item => {
 
     }
 })
+
+let D009_Id = {
+    $or: [{ "attribute_code": "id_d009" }],
+    $perPage: 200,
+    $page: 1
+}
+
+cadastraAtributos(D009_Id, "id_d009", "ID_D009")
 
 let D049_para = {
     $or: [{ "attribute_code": "d049_id" }],
@@ -126,12 +129,11 @@ cadastraAtributos(D001_para, "d001_id", "D001_ID")
 
 function cadastraAtributos(params, code, label) {
     pegaAtributo(params).then(item => {
-        // console.log('linha 110')
-        // console.log(item)
-        var atributo = item.items
+        //console.log(item)
+        var atributo = item
         var atribFornece = false
         var jsonAtribute
-        // console.log(item.length)
+        
         if (item.length != 0) {
             atributo.forEach(atrib => {
                 attribute_id = atrib.attribute_id
@@ -174,8 +176,6 @@ function cadastraAtributos(params, code, label) {
                 }
             }`
             cadastraAtributoProduto(jsonAtribute).then(dados => {
-                // console.log('linha 156')
-                // console.log(dados)
                 if (dados != undefined) {
                     dados = dados.data
                     var attribute_id = dados.attribute_id
@@ -191,3 +191,5 @@ function cadastraAtributos(params, code, label) {
         }
     })
 }
+
+module.exports = { pegaAtributoSet, pegaAtributo, criaGrupoAtributos, cadastraAtributoProduto}

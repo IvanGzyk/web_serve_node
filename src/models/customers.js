@@ -1,16 +1,13 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
 
 /** Cria a tabela caso não exista */
-const Customer = db.define('api_customers', {
+const Customer = db.define(
+    'api_customers', {
     customer_id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
         primaryKey: true
-    },
-    id: {
-        type: Sequelize.INTEGER
     },
     group_id: {
         type: Sequelize.INTEGER
@@ -55,12 +52,10 @@ const Customer = db.define('api_customers', {
         type: Sequelize.STRING(100)
     },
     gender: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: Sequelize.INTEGER
     },
     store_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: Sequelize.INTEGER
     },
     taxvat: { type: Sequelize.STRING(100) }
 },
@@ -75,8 +70,10 @@ const Customer = db.define('api_customers', {
                 fields: ['taxvat']
             }
         ]
-    })
-Customer.sync()
+    }
+)
+Customer.sync({ alter: true })
+//
 
 /** Cria novo customer*/
 function createCustomer(array) {
@@ -92,7 +89,7 @@ async function getCustomer(id_) {
     try {
         const customer = Customer.findAll({
             where: {
-                id: id_
+                customer_id: id_
             }
         })
         return customer
@@ -118,7 +115,7 @@ async function updateCustomer(array, id_) {
             array,
             {
                 where: {
-                    id: id_
+                    customer_id: id_
                 }
             })
         return customer

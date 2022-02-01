@@ -10,6 +10,7 @@ const getCustomers = async function (params) {
 
     try {
         let dados = await client.get('customers/search', params)
+        //console.log(dados)
         return dados
     } catch (err) {
         console.log(err)
@@ -85,7 +86,6 @@ function salvaAddress(dados) {
         Address.default_billing = dados.default_billing
         Address.extension_attributes = dados.extension_attributes
         Address.custom_attributes = dados.custom_attributes
-
         Addres.getAddress(dados.id).then(ret => {
             if (ret.length == 0) {
                 Addres.createAddress(Address)
@@ -97,11 +97,10 @@ function salvaAddress(dados) {
 }
 
 function salvaCustomers(dados) {
-
     const retorno = dados.items
     retorno.forEach(element => {
         var cliente = new Object()
-        cliente.id = element.id
+        cliente.customer_id = element.id
         cliente.group_id = element.group_id
         cliente.default_billing = element.default_billing
         cliente.default_shipping = element.default_shipping
@@ -131,22 +130,22 @@ function salvaCustomers(dados) {
     })
 }
 
-// const job = new CronJob('0 20 * * * *', () => {
+const job = new CronJob('0 */1 * * * *', () => {
     
-//     data_atual = funcoes.dataAtual()
-//     data_inicio = funcoes.dataDeInicio(-30)
+    data_atual = funcoes.dataAtual()
+    data_inicio = funcoes.dataDeInicio(-30)
 
-//     let params = {
-//         $from: data_inicio,
-//         $to: data_atual,
-//         $sort: {
-//             "created_at": "desc"
-//         },
-//         $perPage: 200,
-//         $page: 1
-//     }
-//     getCustomers(params).then(data => data.data).then(items => salvaCustomers(items))
-//     console.log('Clientes atualizado em: '+data_atual)
-// }, null, true, 'America/Sao_Paulo')
+    let params = {
+        //$from: data_inicio,
+        //$to: data_atual,
+        $sort: {
+            "created_at": "desc"
+        },
+        $perPage: 200,
+        $page: 1
+    }
+    getCustomers(params).then(data => data.data).then(items => salvaCustomers(items))
+    console.log('Clientes atualizado em: '+data_atual)
+}, null, true, 'America/Sao_Paulo')
 
 module.exports = { client, getCustomers, getCustomer, postCustomer, putCustomer, deleteCustomer }

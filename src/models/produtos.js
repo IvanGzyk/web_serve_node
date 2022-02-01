@@ -75,7 +75,6 @@ function postProduto(res, obj, img_json = '', img_princi = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            //console.log(err.response.data.message)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     } else {

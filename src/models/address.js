@@ -1,5 +1,6 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
+
 /** Cria a tabela caso não exista */
 const Address = db.define('api_address', {
     id: {
@@ -53,7 +54,7 @@ const Address = db.define('api_address', {
         type: Sequelize.STRING
     },
     region: {
-        type: Sequelize.STRING
+        type: Sequelize.JSON
     },
     region_code: {
         type: Sequelize.STRING
@@ -99,13 +100,17 @@ const Address = db.define('api_address', {
     }
 })
 
-Address.sync()
+Address.sync({ alter: true })
 
 /** Cria novo address*/
 function createAddress(array) {
-    Address.create(
-        array
-    )
+    try {
+        Address.create(
+            array
+        )
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 /**Traz address especifico */
@@ -113,7 +118,7 @@ async function getAddress(id_) {
     try {
         const address = Address.findAll({
             where: {
-                entity_id: id_
+                id: id_
             }
         })
         return address
@@ -139,7 +144,7 @@ async function updateAddress(array, id_) {
             array,
             {
                 where: {
-                    entity_id: id_
+                    id: id_
                 }
             })
         //return address
