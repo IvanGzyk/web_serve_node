@@ -16,6 +16,6 @@ const partners = async function data() {
     } catch (error) {
         console.error(error)
     }
-}
+} 
 
 partners().then(console.log)
