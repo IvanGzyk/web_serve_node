@@ -17,6 +17,6 @@ consign()
     .then('src/integracao')
     .into(app);
 
-app.listen(3000, function () {
+app.listen('3000', function () {
     console.log('APP rodando na porta 3000');
 });

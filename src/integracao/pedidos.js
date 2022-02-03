@@ -55,7 +55,7 @@ async function getPedidos(id) {
 }
 
 function getDados(dados) {
-console.log(dados)
+//console.log(dados)
     const Pedidos = dados['items']
     if (Pedidos.length > 0) {
         Pedidos.forEach(element => {
@@ -87,7 +87,7 @@ console.log(dados)
 
             const End = element.billing_address
             getAdress(End.entity_id).then(dados => {
-                console.log(dados.length)
+                //console.log(dados.length)
                 if (dados.length != 0) {
                     dados.forEach(array => {
                         Adress.updateAddress(End, dados.entity_id)
