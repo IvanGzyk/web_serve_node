@@ -1,21 +1,60 @@
 const laraDb = require('../../config/LaraDb')
-lara = new laraDb(20, 1, 'company_name', 'ASC', 'id, HRD_D024_Id, company_name, trading_name, cnpj, cpf, ie, flag_custumer_supplier, flag_resseler_consumer, flag_legal_entity, flag_simplified_taxation, flag_suframa, flag_mei, birth_date, note, email, email_nfe, email_billing, limit_value, limit_manual_value, limit_manual_date, limit_balance', 'id=1', 'Incremental', 'Rela%C3%A7%C3%A3o')
-
+lara = new laraDb()
+const params = lara.GeraParamsUrl()
+const ApiLara = lara.ApiLaravel()
+ 
 function retornaData(data) {
     data = data.data
     data = data.data
     data = data.data
-    //console.log(data)
     return data
 }
 
-const partners = async function data() {
+async function getPartnersAdsresses(params) {
     try {
-        const response = await lara.EntriesBusinessPartners()
-        return retornaData(response)
+        const response = await ApiLara.get(`/entriesBusinessPartners${params}`)
+        return response
     } catch (error) {
         console.error(error)
     }
-} 
+}
 
-partners().then(console.log)
+async function getCities(params) {
+    try {
+        const response = await ApiLara.get(`/entriesCities${params}`)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function getCountries(params) {
+    try {
+        const response = await ApiLara.get(`/entriesCountries${params}`)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+/** EXEMPLOS */
+
+/** pega Pais onde name for igual a Brasil */
+// var search = encodeURI('name=Brasil')
+
+// getCountries(`?search=${search}`).then(data => {
+//     const dados = retornaData(data)
+//     console.log(dados)
+// })
+
+/** Pega cidade e Estado onde name for igual a Curitiba */
+// var search = encodeURI('name=Curitiba')
+// var relations = encodeURI('Estado')
+
+// getCities(`?search=${search}&relations=${relations}`).then(data => {
+//     const dados = retornaData(data)
+//     console.log(dados)
+// })
+
+/** Pega Endereços */
+//getPartnersAdsresses(params).then(console.log)
