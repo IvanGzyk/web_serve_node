@@ -28,5 +28,7 @@ const job = new CronJob('*/30 */1 * * * *', () => {
 
 const job2 = new CronJob('10 */1 * * * *', () => {
     data_busca = funcoes.dataDeInicio(-1)
-    ModelsCustomers.getCustomers(data_busca).then(console.log)
+    ModelsCustomers.getCustomers(data_busca).then(dados => {
+        customers.SalvaClienteLaraApi(dados)
+    })
 }, null, true, 'America/Sao_Paulo')

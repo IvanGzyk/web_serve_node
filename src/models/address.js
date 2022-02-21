@@ -127,6 +127,20 @@ async function getAddress(id_) {
     }
 }
 
+/**Traz address de cliente  */
+async function getAddressCliente(id_customer) {
+    try {
+        const address = Address.findAll({
+            where: {
+                customer_id: id_customer
+            }
+        })
+        return address
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 /**Traz todos os addresss */
 async function getAddresss() {
     try {
@@ -170,5 +184,6 @@ module.exports.Address = Address
 module.exports.createAddress = createAddress
 module.exports.getAddress = getAddress
 module.exports.getAddresss = getAddresss
+module.exports.getAddressCliente = getAddressCliente
 module.exports.updateAddress = updateAddress
 module.exports.deleteAddress = deleteAddress
