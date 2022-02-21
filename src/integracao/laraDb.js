@@ -10,9 +10,9 @@ function retornaData(data) {
     return data
 }
 
-async function getPartnersAdsresses(params) {
+async function getPartnersAdresses(params) {
     try {
-        const response = await ApiLara.get(`/entriesBusinessPartners${params}`)
+        const response = await ApiLara.get(`/entriesBusinessPartnersAddresses${params}`)
         return response
     } catch (error) {
         console.error(error)
@@ -37,9 +37,27 @@ async function getCountries(params) {
     }
 }
 
+async function getPartners(params) {
+    try {
+        const response = await ApiLara.get(`/entriesBusinessPartners${params}`)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 async function postPartners(params) {
     try {
         const response = await ApiLara.post(`/entriesBusinessPartners`, params)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function putPartners(id, params) {
+    try {
+        const response = await ApiLara.put(`/entriesBusinessPartners/${id}`, params)
         return response
     } catch (error) {
         console.error(error)
@@ -55,16 +73,38 @@ async function postPartnersAddresses(params) {
     }
 }
 
+async function putPartnersAddresses(id, params) {
+    try {
+        const response = await ApiLara.put(`/entriesBusinessPartnersAddresses/${id}`, params)
+        return response
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 module.exports = {
     retornaData,
-    getPartnersAdsresses, 
-    getCities, 
-    getCountries, 
-    postPartners, 
-    postPartnersAddresses
+    getPartnersAdresses,
+    getCities,
+    getCountries,
+    getPartners,
+    postPartners,
+    putPartners,
+    postPartnersAddresses,
+    putPartnersAddresses
 }
 
 /** EXEMPLOS */
+
+/** pega Cliente onde email for igual a email */
+// const searchLike = encodeURIComponent('email=ppppp%')
+// const relations = encodeURIComponent('Relação')
+// console.log(searchLike)
+// getPartners(`?search=Busca&searchLike=${searchLike}&relations=${relations}`).then(data => {
+//     const dados = retornaData(data)
+//     console.log(dados.length)
+//     console.log(dados)
+// })
 
 /** pega Pais onde name for igual a Brasil */
 // var search = encodeURI('name=Brasil')

@@ -79,6 +79,7 @@ class Customers {
     }
 
     SalvaClienteLaraApi(array) {
+
         if (array.length) {
             var cpf = ''
             var cnpj = ''
@@ -94,29 +95,74 @@ class Customers {
                 "company_name": `${api_customers.firstname} ${api_customers.lastname} ${api_customers.middlename}`,
                 "cnpj": `${cnpj}`,
                 "cpf": `${cpf}`,
+                "flag_custumer_supplier": "C",
+                "flag_resseler_consumer": "C",
+                "flag_legal_entity": "F",
+                "flag_simplified_taxation": "N",
+                "flag_suframa": "N",
+                "flag_mei": "N",
                 "email": `${api_customers.email}`
             }
             Addres.getAddressCliente(api_customers.customer_id).then(dados => {
                 let api_address = dados[0].dataValues
-                IntegracaoLaraDb.postPartners(jsonCliente).then(data => {
-                    data = data.data.data
-                    let idCliente = data.id
-                    let search = encodeURI(`name=${api_address.city}`)
-                    let relations = encodeURI('Estado')
-                    IntegracaoLaraDb.getCities(`?search=${search}&relations=${relations}`).then(data => {
-                        let dados = IntegracaoLaraDb.retornaData(data)
-                        dados = dados[0]
-                        var jsonEndereco = {
-                            "entries_business_partner_id": idCliente,
-                            "zip": api_address.postcode,
-                            "address": api_address.street[0],
-                            "city_id": dados.id,
-                            "state_id": dados.state_id,
-                            "country_id": 1
-                        }
-                        console.log(jsonEndereco)
-                        IntegracaoLaraDb.postPartnersAddresses(jsonEndereco).then(console.log)
-                    })
+                let usuario = api_customers.email.split("@")
+                const searchLike = encodeURIComponent(`email=${usuario[0]}%`)
+                const relations = encodeURIComponent('Relação')
+                // console.log(searchLike)
+                IntegracaoLaraDb.getPartners(`?search=Busca&searchLike=${searchLike}&relations=${relations}`).then(data => {
+                    const dados = IntegracaoLaraDb.retornaData(data)
+                    if (dados.length == 0) {
+                        IntegracaoLaraDb.postPartners(jsonCliente).then(data => {
+                            data = data.data.data
+                            let idCliente = data.id
+                            let search = encodeURI(`name=${api_address.city}`)
+                            let relations = encodeURI('Estado')
+                            IntegracaoLaraDb.getCities(`?search=${search}&relations=${relations}`).then(data => {
+                                let dados = IntegracaoLaraDb.retornaData(data)
+                                dados = dados[0]
+                                var jsonEndereco = {
+                                    "entries_business_partner_id": idCliente,
+                                    "zip": api_address.postcode,
+                                    "address": api_address.street[0],
+                                    "city_id": dados.id,
+                                    "state_id": dados.state_id,
+                                    "country_id": 1
+                                }
+                                //console.log(jsonEndereco)
+                                IntegracaoLaraDb.postPartnersAddresses(jsonEndereco)//.then(console.log)
+                            })
+                        })
+                    } else {
+                        // console.log(dados.length)
+                        // console.log(dados[0].id)
+                        let clienteId = dados[0].id
+                        IntegracaoLaraDb.putPartners(clienteId, jsonCliente).then(data => {
+                            //console.log(data)
+                            data = data.data.data
+                            //console.log(data)
+                            let idCliente = data.id
+                            let search = encodeURI(`name=${api_address.city}`)
+                            let relations = encodeURI('Estado')
+                            IntegracaoLaraDb.getCities(`?search=${search}&relations=${relations}`).then(data => {
+                                let dados = IntegracaoLaraDb.retornaData(data)
+                                dados = dados[0]
+                                var jsonEndereco = {
+                                    "entries_business_partner_id": idCliente,
+                                    "zip": api_address.postcode,
+                                    "address": api_address.street[0],
+                                    "city_id": dados.id,
+                                    "state_id": dados.state_id,
+                                    "country_id": 1
+                                }
+                                const search = encodeURIComponent(`entries_business_partner_id=${clienteId}`)
+                                let relations = encodeURIComponent('Relação')
+                                IntegracaoLaraDb.getPartnersAdresses(`?search=${search}&relations=${relations}`).then(dados => {
+                                    data = dados.data.data.data
+                                    IntegracaoLaraDb.putPartnersAddresses(data[0].id, jsonEndereco)//.then(console.log)
+                                })
+                            })
+                        })
+                    }
                 })
             })
         }
