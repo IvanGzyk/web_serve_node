@@ -29,7 +29,7 @@ class Util {
         var minutoIni = String(dataIni.getMinutes()).padStart(2, '0')
         var segundosIni = String(dataIni.getSeconds()).padStart(2, '0')
 
-        var data_inicio = (anoIni - 1) + '-' + mesIni + '-' + diaIni + ' ' + horaIni + ':' + minutoIni + ':' + segundosIni
+        var data_inicio = (anoIni) + '-' + mesIni + '-' + diaIni + ' ' + horaIni + ':' + minutoIni + ':' + segundosIni
         return data_inicio
     }
 

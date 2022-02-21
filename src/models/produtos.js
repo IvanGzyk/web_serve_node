@@ -283,6 +283,7 @@ function putImg(id, img) {
 
 const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
+    /** Alterar D009_C004_Id de 1 para 16 quando for para produção */
     try {
         db.query(`SELECT
         D009_Id hrd_D009_Id,
@@ -357,6 +358,7 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
 }, null, true, 'America/Sao_Paulo')
 
+    /** Alterar D009_C004_Id de 1 para 16 quando for para produção */
 function atualizaBase(res) {
     try {
         db.query(`SELECT

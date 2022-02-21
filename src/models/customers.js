@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const db = require("../../config/db").sequelize
+const { Op } = require("sequelize")
 
 /** Cria a tabela caso não exista */
 const Customer = db.define(
@@ -99,9 +100,15 @@ async function getCustomer(id_) {
 }
 
 /**Traz todos os Customers */
-async function getCustomers() {
+async function getCustomers(data_busca) {
     try {
-        const customer = Customer.findAll()
+        const customer = Customer.findAll({
+            where: {
+                updated_at: {
+                    [Op.gte]: data_busca
+                }
+            }
+        })
         return customer
     } catch (error) {
         console.log(error)

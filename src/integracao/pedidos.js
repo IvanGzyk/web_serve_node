@@ -54,8 +54,17 @@ async function getPedidos(id) {
     }
 }
 
+module.exports = {
+    client,
+    getOrders,
+    getItem,
+    getAdress,
+    getPag,
+    getPedidos
+}
+
 function getDados(dados) {
-//console.log(dados)
+    //console.log(dados)
     const Pedidos = dados['items']
     if (Pedidos.length > 0) {
         Pedidos.forEach(element => {
@@ -154,9 +163,10 @@ function getDados(dados) {
     return dados
 }
 
-const job = new CronJob('30 */1 * * * *', () => {
-    data_atual = funcoes.dataAtual()
-    data_inicio = funcoes.dataDeInicio(-5)
+/** Verifica as ordems a cada 5 minutos*/
+const job = new CronJob('30 */5 * * * *', () => {
+    data_atual = funcoes.dataAtual()/** hora atual */
+    data_inicio = funcoes.dataDeInicio(-5) /** Hora atual menos 5 minutos */
 
     let params = {
         $from: data_inicio,

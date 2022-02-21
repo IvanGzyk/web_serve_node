@@ -15,6 +15,7 @@ consign()
     .then('src/models')
     .then('src/controllers')
     .then('src/integracao')
+    .then('src/cron')
     .into(app);
 
 app.listen('3000', function () {

@@ -55,6 +55,15 @@ async function postPartnersAddresses(params) {
     }
 }
 
+module.exports = {
+    retornaData,
+    getPartnersAdsresses, 
+    getCities, 
+    getCountries, 
+    postPartners, 
+    postPartnersAddresses
+}
+
 /** EXEMPLOS */
 
 /** pega Pais onde name for igual a Brasil */
@@ -79,31 +88,31 @@ async function postPartnersAddresses(params) {
 
 /** Cadastra novo Cliente */
 
-var jsonCliente = {
-    "company_name": "Teste2",
-    "cpf": "13345876951",
-    "birth_date": "2022-02-17",
-    "email": "teste2@teste2.com"
-}
+// var jsonCliente = {
+//     "company_name": "Teste2",
+//     "cpf": "13345876951",
+//     "birth_date": "2022-02-17",
+//     "email": "teste2@teste2.com"
+// }
 
-postPartners(jsonCliente).then(data => {
-    data = data.data.data
-    idCliente = data.id
-    var search = encodeURI('name=Curitiba')
-    var relations = encodeURI('Estado')
-    getCities(`?search=${search}&relations=${relations}`).then(data => {
-        let dados = retornaData(data)
-        dados = dados[0]
-        city_id = dados.id
-        state_id = dados.state_id
-        var jsonEndereco = {
-            "entries_business_partner_id": idCliente,
-            "zip": "8457891",
-            "address": "R. Teste, n. 1000",
-            "city_id": city_id,
-            "state_id": state_id,
-            "country_id": 1
-        }
-        postPartnersAddresses(jsonEndereco).then(console.log)
-    })
-})
+// postPartners(jsonCliente).then(data => {
+//     data = data.data.data
+//     idCliente = data.id
+//     var search = encodeURI('name=Curitiba')
+//     var relations = encodeURI('Estado')
+//     getCities(`?search=${search}&relations=${relations}`).then(data => {
+//         let dados = retornaData(data)
+//         dados = dados[0]
+//         city_id = dados.id
+//         state_id = dados.state_id
+//         var jsonEndereco = {
+//             "entries_business_partner_id": idCliente,
+//             "zip": "8457891",
+//             "address": "R. Teste, n. 1000",
+//             "city_id": city_id,
+//             "state_id": state_id,
+//             "country_id": 1
+//         }
+//         postPartnersAddresses(jsonEndereco).then(console.log)
+//     })
+// })

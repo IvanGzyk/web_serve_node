@@ -23,10 +23,12 @@ criaGrupoAtributos = async function (params) {
         attribute_set_id = data.attribute_set_id
     })
 }
+
 cadastraAtributoProduto = async function (params) {
     var data = await prod_mag.postProdutosAtributos(params)
     return funcoes.retornaData(data)
 }
+
 pegaAtributoSet(fornecedor_set).then(item => {
     if (item.length == 0) {
         var grup_atributos = {
