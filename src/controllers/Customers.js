@@ -3,9 +3,10 @@ const CronJob = require('cron').CronJob
 const Addres = require('../models/address')
 const ModelsCustomers = require('../models/customers')
 const IntegracaoCustomers = require('../integracao/customers')
+const IntegracaoLaraDb = require('../integracao/laraDb')
 
 class Customers {
-    constructor(){
+    constructor() {
 
     }
 
@@ -42,7 +43,7 @@ class Customers {
             })
         }
     }
-    
+
     SalvaCustomers(dados) {
         const retorno = dados.items
         retorno.forEach(element => {
@@ -65,7 +66,7 @@ class Customers {
             cliente.gender = element.gender
             cliente.store_id = element.store_id
             cliente.taxvat = element.taxvat
-    
+
             ModelsCustomers.getCustomer(element.id).then(ret => {
                 if (ret.length == 0) {
                     ModelsCustomers.createCustomer(cliente)
@@ -75,6 +76,50 @@ class Customers {
             })
             IntegracaoCustomers.getshippingAddress(element.id).then(dados => dados.data).then(dados => this.SalvaAddress(dados))
         })
+    }
+
+    SalvaClienteLaraApi(array) {
+        if (array.length) {
+            var cpf = ''
+            var cnpj = ''
+            let api_customers = array[0].dataValues
+            if (api_customers.taxvat != null) {
+                if (api_customers.taxvat.length <= 14) {
+                    cpf = api_customers.taxvat
+                } else {
+                    cnpj = api_customers.taxvat
+                }
+            }
+            var jsonCliente = {
+                "company_name": `${api_customers.firstname} ${api_customers.lastname} ${api_customers.middlename}`,
+                "cnpj": `${cnpj}`,
+                "cpf": `${cpf}`,
+                "email": `${api_customers.email}`
+            }
+            Addres.getAddressCliente(api_customers.customer_id).then(dados => {
+                let api_address = dados[0].dataValues
+                IntegracaoLaraDb.postPartners(jsonCliente).then(data => {
+                    data = data.data.data
+                    let idCliente = data.id
+                    let search = encodeURI(`name=${api_address.city}`)
+                    let relations = encodeURI('Estado')
+                    IntegracaoLaraDb.getCities(`?search=${search}&relations=${relations}`).then(data => {
+                        let dados = IntegracaoLaraDb.retornaData(data)
+                        dados = dados[0]
+                        var jsonEndereco = {
+                            "entries_business_partner_id": idCliente,
+                            "zip": api_address.postcode,
+                            "address": api_address.street[0],
+                            "city_id": dados.id,
+                            "state_id": dados.state_id,
+                            "country_id": 1
+                        }
+                        console.log(jsonEndereco)
+                        IntegracaoLaraDb.postPartnersAddresses(jsonEndereco).then(console.log)
+                    })
+                })
+            })
+        }
     }
 }
 
