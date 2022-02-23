@@ -42,17 +42,17 @@ async function atributos(para) {
 async function cadastraAtributo(attribute_id, fornecedor) {
     try {
         jsonAtribute = `{
-        "attribute": {
-            "position": 0,
-            "used_in_product_listing": "true",
-            "attribute_id": ${attribute_id},
-            "options": [
-                {
-                    "label": "${fornecedor}"
-                }
-            ]
-        }
-    }`
+            "attribute": {
+                "position": 0,
+                "used_in_product_listing": "true",
+                "attribute_id": ${attribute_id},
+                "options": [
+                    {
+                        "label": "${fornecedor}"
+                    }
+                ]
+            }
+        }`
         await prod_mag.putProdutosAtributos(attribute_id, jsonAtribute)
     } catch (error) {
         console.log(error)
@@ -96,29 +96,19 @@ async function atualizaProduto(sku, params) {
     }
 }
 
-async function viculaProduto(sku, params) {
+async function VinculaSimplesConfiguravel(element, sku) {
     try {
-        dados = await prod_mag.addProdutoSimple(sku, params)
+        await prod_mag.addProdutoSimple(element.product_code, `{"childSku": "${sku}"}`)
     } catch (error) {
         console.log(error)
     }
 }
 
-async function main7(element, sku) {
-    try {
-        await viculaProduto(element.product_code, `{"childSku": "${sku}"}`)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-async function main6(items, element, json, sku) {
+async function CadastraSimples(items, element, json, sku) {
     try {
         if (items.length != 0) {
             try {
                 await atualizaProduto(sku, json).then(data => {
-                    console.log('atualiza')
-
                     let dados = data.data
                     let img = dados.media_gallery_entries
                     var img_local = element.img
@@ -126,8 +116,10 @@ async function main6(items, element, json, sku) {
                     img_local = JSON.parse(img_local)
                     const img_json = funcoes.salva_id_img(img_local, img)
                     ProdutoModel.putImg(element.id, img_json)
-                    main7(element, sku)
-                    ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                    VinculaSimplesConfiguravel(element, sku)
+                        (async () => {
+                            await ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                        })()
                 })
             } catch (error) {
                 console.log("Produto não encontrado! " + error)
@@ -143,8 +135,10 @@ async function main6(items, element, json, sku) {
                     img_local = JSON.parse(img_local)
                     const img_json = funcoes.salva_id_img(img_local, img)
                     ProdutoModel.putImg(element.id, img_json)
-                    main7(element, sku)
-                    ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                    VinculaSimplesConfiguravel(element, sku)
+                        (async () => {
+                            await ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
+                        })()
                 })
             } catch (error) {
                 console.log("Produto não encontrado!")
@@ -155,45 +149,50 @@ async function main6(items, element, json, sku) {
     }
 }
 
-async function main5(element, json, sku) {
+async function PegaProdutaCode(element, json, sku) {
     try {
         await pegaProduto(element.product_code).then(items => {
-            main6(items, element, json, sku)
+            (async () => {
+                await CadastraSimples(items, element, json, sku)
+            })()
         })
     } catch (error) {
         console.log(error)
     }
 }
 
-async function main4(element, options, json, sku) {
+async function CadastraOpcoesConfiguravel(element, options, json, sku) {
     try {
         await cadastraProdutoConfiguravel(element.product_code, options)
-        main5(element, json, sku)
+        await PegaProdutaCode(element, json, sku)
     } catch (error) {
         console.log(error)
     }
 }
 
-async function main3(json_configurable, element, options, json, sku) {
+async function CadastraConfiguravel(json_configurable, element, options, json, sku) {
     try {
         if (json_configurable != undefined) {
             try {
                 await cadastraProduto(json_configurable).then(dados => {
-                    console.log('aqui')
-                    main4(element, options, json, sku)
+                    (async () => {
+                        await CadastraOpcoesConfiguravel(element, options, json, sku)
+                    })()
                 })
             } catch (error) {
                 console.log(error)
             }
         } else {
-            main4(element, options, json, sku)
+            (async () => {
+                await CadastraOpcoesConfiguravel(element, options, json, sku)
+            })()
         }
     } catch (error) {
         console.log(error)
     }
 }
 
-async function main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id) {
+async function JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id) {
     try {
         await pegaProduto(element.product_code).then(data => {
             var json_configurable
@@ -243,14 +242,16 @@ async function main2(element, name, id_d009, category, qty, img_configuravel, at
                 }
             }`
             }
-            main3(json_configurable, element, options, json, sku)
+            (async () => {
+                await CadastraConfiguravel(json_configurable, element, options, json, sku)
+            })()
         })
     } catch (error) {
         console.log(error)
     }
 }
 
-async function main(element) {
+async function GeraraAtributo(element) {
 
     let para = {
         $or: [{ "attribute_code": "fornecedor" }],
@@ -281,13 +282,14 @@ async function main(element) {
                 }
             })
             if (atribFornece == false) {
-                cadastraAtributo(attribute_id, fornecedor)
+                (async () => {
+                    await cadastraAtributo(attribute_id, fornecedor)
+                })()
             }
         })
     } catch (error) {
         console.log(error)
     }
-
     try {
         await atributos(para).then(atrib => {
             var forn = element.fornecedor.split(" - ")
@@ -304,7 +306,6 @@ async function main(element) {
                     value_index = opt.value
                 }
             })
-
             id_d001 = element.product_code
             id_d009 = element.hrd_D009_Id
             id_d049 = element.D049Id
@@ -314,11 +315,9 @@ async function main(element) {
             qty = element.actual_quantity
             category = element.categories_id
             ativo = 0
-
             atribu.pegaAtributoSet(fornecedor_set).then(item => {
                 if (item.length != 0) {
                     var atributo_set_id = item[0].attribute_set_id
-                    console.log(atributo_set_id)
                     if (element.active == 'N') {
                         json = `
                             {
@@ -375,7 +374,9 @@ async function main(element) {
                             }
                         }`
                     }
-                    main2(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id)
+                    (async () => {
+                        await JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id)
+                    })()
                 }
             })
         })
@@ -512,8 +513,10 @@ const atualiza = function (req, res) {
         aitvo = 'S'
     }
     const imagems = JSON.parse(JSON.stringify(req.files))
-    if (!imagems) {
+
+    if (imagems) {
         imagems.imagem.forEach(element => {
+            console.log(element)
             var base64str = this.base64_encode(element.path)
             img_princi = `
                 "media_gallery_entries": [{
@@ -603,10 +606,11 @@ const apagar = function (req, res) {
 const atualiza_mage = function (req, res) {
     try {
         bd.query('SELECT * FROM product', function (err, rows, fields) {
-
             rows.forEach(element => {
                 if (element.active == 'S') {
-                    main(element)
+                    (async () => {
+                        await GeraraAtributo(element)
+                    })()
                 }
             })
             res.render("produtos/produtos", {
@@ -620,13 +624,14 @@ const atualiza_mage = function (req, res) {
 }
 
 const cad_prod_unic = function (req, res) {
-
     let params = req.params
     try {
         bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
 
             rows.forEach(element => {
-                main(element)
+                (async () => {
+                    await GeraraAtributo(element)
+                })()
             })
         })
     } catch (error) {

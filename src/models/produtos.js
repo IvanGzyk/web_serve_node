@@ -4,6 +4,7 @@ const prod_mag = require("../integracao/produtos")
 const CronJob = require('cron').CronJob
 
 function postProduto(res, obj, img_json = '', img_princi = '') {
+    console.log(img_json)
     cat = obj.categ
     cate = ''
     x = 1

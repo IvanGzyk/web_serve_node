@@ -88,8 +88,6 @@ pegaAtributoSet(fornecedor_set).then(item => {
 
         criaGrupoAtributos(grup_atributos)
         cadastraAtributoProduto(jsonAtribute).then(data => {
-            // console.log('lihna 75')
-            //console.log(data)
             if (data != undefined) {
                 data = data.data
                 attribute_id = data.attribute_id
@@ -102,7 +100,6 @@ pegaAtributoSet(fornecedor_set).then(item => {
                 criaGrupoAtributos(jsonSetAtri)
             }
         })
-
     }
 })
 
@@ -131,7 +128,6 @@ cadastraAtributos(D001_para, "d001_id", "D001_ID")
 
 function cadastraAtributos(params, code, label) {
     pegaAtributo(params).then(item => {
-        //console.log(item)
         var atributo = item
         var atribFornece = false
         var jsonAtribute
