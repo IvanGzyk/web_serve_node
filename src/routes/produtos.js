@@ -17,24 +17,15 @@ module.exports = function (application) {
         }
     })
 
-    // const upload = multer({storage : storage, limits: {
-    //     fileSize : 1024 * 1024 * 5 
-    // }})
-
     const upload = multer({ storage: storage })
 
     application.get('/produtos', function (req, res) {
         application.src.controllers.Produtos.produtos(application, req, res)
-        //produto.produtos(application, req, res)
     })
 
     application.get('/form', function (req, res) {
         application.src.controllers.Produtos.novo(req, res)
     })
-
-    // application.post('/salva_form', upload.array("foto", 10), (req, res) => {
-    //     produto.salva_form(req, res)
-    // })
 
     application.post('/salva_form', upload.fields([{ name: 'foto', maxCount: 10 }, { name: 'imagem' }]), (req, res, next) => {
         application.src.controllers.Produtos.salva_form(req, res, next)

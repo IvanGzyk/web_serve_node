@@ -18,8 +18,8 @@ pegaAtributo = async function (params) {
     return funcoes.atributoSet(atrib)
 }
 
-criaGrupoAtributos = async function (params) {
-    await prod_mag.postGrupoAtributos(params).then(data => {
+criaGrupoAtributos = function (params) {
+    prod_mag.postGrupoAtributos(params).then(data => {
         attribute_set_id = data.attribute_set_id
     })
 }

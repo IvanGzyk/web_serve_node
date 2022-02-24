@@ -1,24 +1,4 @@
-<!doctype html>
-<html lang="pt">
 
-<head>
-  <%- include('../layout/head'); %>
-</head>
-
-<body>
-  <div class="container">
-    <header>
-      <%- include('../layout/header'); %>
-    </header>
-
-    <div class="title">
-      <h4 class="mb-sm-0 font-size-18">E-commerce</h4>
-    </div>
-
-    <div class="row">
-      <%- include('../layout/menu'); %>
-
-        <main class="col conteudo">
           <% if (items.length> 0) { %>
             <div class="row">
               <% for(var i=0; i < items.length; i++) {%>
@@ -31,13 +11,3 @@
                 <% } %>
             </div>
             <% } %>
-        </main>
-
-    </div>
-  </div>
-  <footer>
-    <%- include('../layout/footer'); %>
-  </footer>
-</body>
-
-</html>

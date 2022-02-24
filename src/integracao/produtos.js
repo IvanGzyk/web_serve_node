@@ -7,7 +7,7 @@ const getProdutos = async function () {
         let dados = await client.get('products')
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.error(`products (${err.response.data.message})`)
     }
 }
 
@@ -16,17 +16,16 @@ const getProduto = async function (codigo) {
         let dados = await client.get('products', { sku: codigo })
         return dados
     } catch (err) {
-        console.log(err.response)
+        console.error(`products (${err.response.data.message})`)
     }
 }
 
 const postProduto = async function (json) {
-    console.log(json)
     try {
-        let dados = await client.post('products', json)//.then(console.log)
+        let dados = await client.post('products', json)
         return dados
     } catch (err) {
-        console.log(err.response)
+        console.error(`products (${err.response.data.message})`)
     }
 }
 
@@ -35,7 +34,7 @@ const putProduto = async function (sku, json) {
         let dados = await client.put(`products/${sku}`, json)
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.error(`products/${sku} (${err.response.data.message})`)
     }
 }
 
@@ -44,85 +43,85 @@ const deleteProduto = async function (sku) {
         let dados = await client.delete(`products/${sku}`)
         return dados
     } catch (err) {
-        console.log(err.response.data.message)
+        console.error(`products/${sku} (${err.response.data.message})`)
     }
 }
 
-const addProdutoSimple = async function (sku, json){
+const addProdutoSimple = async function (sku, json) {
     try {
         let dados = await client.post(`configurable-products/${sku}/child`, json)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`configurable-products/${sku}/child (${err.response.data.message})`)
     }
 }
 
-const ProdutoConfigurableOptions = async function (sku, json){
+const ProdutoConfigurableOptions = async function (sku, json) {
     try {
         let dados = await client.post(`configurable-products/${sku}/options`, json)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`configurable-products/${sku}/options (${err.response.data.message})`)
     }
 }
 
-const GetProdutosAtributos = async function (params){
+const GetProdutosAtributos = async function (params) {
     try {
         let dados = await client.get(`products/attributes`, params)
         return dados
-    } catch (err){
-        console.log(err.response)
+    } catch (err) {
+        console.error(`products/attributes (${err.response.data.message})`)
     }
 }
 
-const putProdutosAtributos = async function (aributeCode, params){
+const putProdutosAtributos = async function (aributeCode, params) {
     try {
         let dados = await client.put(`products/attributes/${aributeCode}`, params)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`products/attributes/${aributeCode} (${err.response.data.message})`)
     }
 }
 
-const postProdutosAtributos = async function (params){
+const postProdutosAtributos = async function (params) {
     try {
         let dados = await client.post(`products/attributes`, params)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`products/attributes (${err.response.data.message})`)
     }
 }
 
-const getGrupoAtributosSet = async function (params){
+const getGrupoAtributosSet = async function (params) {
     try {
         let dados = await client.get(`products/attribute-sets/sets/list`, params)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`products/attribute-sets/sets/list (${err.response.data.message})`)
     }
 }
 
-const postGrupoAtributos = async function (params){
+const postGrupoAtributos = async function (params) {
     try {
         let dados = await client.post(`products/attribute-sets`, params)
         return dados
-    } catch (err){
-        console.log(err.response.data.message)
+    } catch (err) {
+        console.error(`products/attribute-sets (${err.response.data.message})`)
     }
 }
 
 
 
-module.exports = { 
-    client, 
-    getProdutos, 
-    getProduto, 
-    postProduto, 
-    putProduto, 
-    deleteProduto, 
-    addProdutoSimple, 
-    ProdutoConfigurableOptions, 
-    GetProdutosAtributos, 
+module.exports = {
+    client,
+    getProdutos,
+    getProduto,
+    postProduto,
+    putProduto,
+    deleteProduto,
+    addProdutoSimple,
+    ProdutoConfigurableOptions,
+    GetProdutosAtributos,
     putProdutosAtributos,
     postProdutosAtributos,
     getGrupoAtributosSet,

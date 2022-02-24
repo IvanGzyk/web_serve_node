@@ -1,122 +1,80 @@
-<!doctype html>
-<html lang="pt-br">
-
-<head>
-    <%- include('../layout/head'); %>
-        <% if (msg !='' ) { %>
-            <script>
-                let msg = '<%=msg %>'
-                alert(msg)
-            </script>
-            <% } %>
-</head>
-
-<body>
-    <div class="container">
-        <div class="row">
-
-            <div class="col-12 col-md-12">
-                <header>
-                    <%- include('../layout/header'); %>
-                </header>
-            </div>
-
-            <div class="title col-12 col-md-12">
-                <h4 class="mb-sm-0 font-size-18">Produtos E-commerce</h4>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="col-12 col-md-2">
-                <%- include('../layout/menu'); %>
-            </div>
-            <main class="col-12 col-md-10">
-                <div class="col conteudo">
-                    <div id="mostra" class="row" style="display: none;">
-                        <div class="col-sm-12 mb-3">
-                            <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
-                            <a class="btn btn-outline-primary" href="/atualiza_base">Atualiza Base de Dados</a>
-                            <!-- <a class="btn btn-outline-primary" href="/form">Novo</a> -->
-                            <!-- <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
+<div id="mostra" class="row" style="display: none;">
+    <div class="col-sm-12 mb-3">
+        <a class="btn btn-outline-primary" href="/cadastra">Atualiza Loja</a>
+        <a class="btn btn-outline-primary" href="/atualiza_base">Atualiza Base de Dados</a>
+        <!-- <a class="btn btn-outline-primary" href="/form">Novo</a> -->
+        <!-- <a href="/cadastra"><i class="bi bi-arrow-repeat"></i></a>
                     <a href="/form"><i class="bi bi-clipboard-plus"></i></a> -->
-                        </div>
-
-                        <div class="table-responsive" id="crudTable">
-                            <table id="Dt_tabela" class="table table-striped table-bordered" style="width:100%">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th class="border border-light border-1 p-1">D009_Id</th>
-                                        <th class="border border-light border-1 p-1">Código Produto</th>
-                                        <th class="border border-light border-1 p-1">Nome Produto</th>
-                                        <th class="border border-light border-1 p-1">Custo</th>
-                                        <th class="border border-light border-1 p-1">IPV</th>
-                                        <th class="border border-light border-1 p-1">Preço</th>
-                                        <th class="border border-light border-1 p-1">Preço Loja</th>
-                                        <th class="border border-light border-1 p-1">Qtd Local</th>
-                                        <th class="border border-light border-1 p-1">Qtd Reservada</th>
-                                        <th class="border border-light border-1 p-1">Qtd Ec</th>
-                                        <th class="border border-light border-1 p-1">Ativo</th>
-                                        <th class="border border-light border-1 p-1"></th>
-                                        <th class="border border-light border-1 p-1"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% produtos.forEach(element=> { %>
-                                        <tr>
-                                            <td class="p-1">
-                                                <%=element.hrd_D009_Id %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.product_code %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.nome %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.cost_unit %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.ipv %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.price_unit %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.price_loja %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.local_quantity %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.reserved_quantity %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.actual_quantity %>
-                                            </td>
-                                            <td class="p-1">
-                                                <%=element.active %>
-                                            </td>
-                                            <td class="p-1">
-                                                <a href="/form_update/<%=element.id%>"><i class="bi bi-pencil-square"></i></a>
-                                            </td>
-                                            <td class="p-1">
-                                                <a href="/cad_unic/<%=element.hrd_D009_Id%>/<%=element.product_code%>"><i class="bi bi-shop-window"></i></a>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
     </div>
-    <footer>
-        <%- include('../layout/footer'); %>
-    </footer>
-</body>
+
+    <div class="table-responsive" id="crudTable">
+        <table id="Dt_tabela" class="table table-striped table-bordered" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th class="border border-light border-1 p-1">D009_Id</th>
+                    <th class="border border-light border-1 p-1">Código Produto</th>
+                    <th class="border border-light border-1 p-1">Nome Produto</th>
+                    <th class="border border-light border-1 p-1">Custo</th>
+                    <th class="border border-light border-1 p-1">IPV</th>
+                    <th class="border border-light border-1 p-1">Preço</th>
+                    <th class="border border-light border-1 p-1">Preço Loja</th>
+                    <th class="border border-light border-1 p-1">Qtd Local</th>
+                    <th class="border border-light border-1 p-1">Qtd Reservada</th>
+                    <th class="border border-light border-1 p-1">Qtd Ec</th>
+                    <th class="border border-light border-1 p-1">Ativo</th>
+                    <th class="border border-light border-1 p-1"></th>
+                    <th class="border border-light border-1 p-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% produtos.forEach(element=> { %>
+                    <tr>
+                        <td class="p-1">
+                            <%=element.hrd_D009_Id %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.product_code %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.nome %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.cost_unit %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.ipv %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.price_unit %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.price_loja %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.local_quantity %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.reserved_quantity %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.actual_quantity %>
+                        </td>
+                        <td class="p-1">
+                            <%=element.active %>
+                        </td>
+                        <td class="p-1">
+                            <a href="/form_update/<%=element.id%>"><i class="bi bi-pencil-square"></i></a>
+                        </td>
+                        <td class="p-1">
+                            <a href="/cad_unic/<%=element.hrd_D009_Id%>/<%=element.product_code%>"><i
+                                    class="bi bi-shop-window"></i></a>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $('#Dt_tabela').DataTable()
@@ -124,5 +82,3 @@
     })
 
 </script>
-
-</html>

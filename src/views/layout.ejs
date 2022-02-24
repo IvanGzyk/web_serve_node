@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Expresso com EJS</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="/js/home.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <header>
+                    <%- include('layout/header'); %>
+                </header>
+            </div>
+            <div class="title col-12 col-md-12">
+                <h4 class="mb-sm-0 font-size-18">E-commerce</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <%- include('layout/menu'); %>
+            </div>
+            <div class="col-12 col-md-10">
+                <main class="col conteudo">
+                    <%- body %>
+                </main>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <%- include('layout/footer'); %>
+    </footer>
+    <script type="text/javascript" src="/js/form_prod.js"></script>
+</body>

@@ -76,6 +76,7 @@ function postProduto(res, obj, img_json = '', img_princi = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
+            console.log(`/models/products/ postProduto() ${err}`)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     } else {
@@ -105,7 +106,7 @@ function postProduto(res, obj, img_json = '', img_princi = '') {
             );`)
             getProduto(res, "Produto cadastrado com Sucesso!")
         } catch (err) {
-            //console.log(err.response.data.message)
+            console.log(`/models/products/ postProduto() ${err}`)
             getProduto(res, `Erro ao tentar cadastrar! ERRO: ${err} `)
         }
     }
@@ -157,7 +158,6 @@ function putProduto(res, obj, img_json = '', img_princi = '') {
     if (obj.active) {
         eco_db.query(`SELECT active FROM product WHERE product_code = "${obj.product_code}" AND D024Id = "${obj.D024Id}" AND hrd_D009_Id != "${obj.hrd_D009_Id}"`, function (err, rows, fields) {
 
-            // console.log(rows.length)
             if (rows.length > 0) {
                 rows.forEach(element => {
                     if (element.active == 'S') {
@@ -193,7 +193,7 @@ function putProduto(res, obj, img_json = '', img_princi = '') {
                     getProduto(res, msg)
 
                 } catch (err) {
-                    console.log(err.response)
+                    console.log(`/models/products/ putProduto() ${err}`)
                     getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
                 }
             } else {
@@ -215,7 +215,7 @@ function putProduto(res, obj, img_json = '', img_princi = '') {
                     getProduto(res, msg)
 
                 } catch (err) {
-                    console.log(err.response.data.message)
+                    console.log(`/models/products/ putProduto() ${err}`)
                     getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
                 }
             }
@@ -239,7 +239,7 @@ function putProduto(res, obj, img_json = '', img_princi = '') {
             getProduto(res, msg)
 
         } catch (err) {
-            console.log(err.response.data.message)
+            console.log(`/models/products/ putProduto() ${err}`)
             getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
         }
     }
@@ -255,13 +255,12 @@ function getProduto(res, msg_ = '') {
 }
 
 function atualizaValorProdLoja(price, id) {
-    
+
     eco_db.query(`
     UPDATE product SET
     price_loja = '${price}'
     WHERE  id=${id};`)
 }
-//atualizaValorProdLoja()
 
 function deleteProduto(id) {
     eco_db.query(`DELETE FROM product where id = ${id}`)
@@ -273,9 +272,8 @@ function putImg(id, img) {
     UPDATE product SET
     img = '${img}'
     WHERE  id=${id};`)
-        //getProduto(res, "Imagem atualizada!")
     } catch (err) {
-        //getProduto(res, `Erro ao tentar Atualizar! ERRO: ${err}`)
+        console.log(`/models/products/ putImg() ${err}`)
     }
 
 }
@@ -359,7 +357,7 @@ const job = new CronJob('0 0 20 * * *', () => { // roda sempre as 20 horas
 
 }, null, true, 'America/Sao_Paulo')
 
-    /** Alterar D009_C004_Id de 1 para 16 quando for para produção */
+/** Alterar D009_C004_Id de 1 para 16 quando for para produção */
 function atualizaBase(res) {
     try {
         db.query(`SELECT

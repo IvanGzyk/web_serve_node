@@ -1,33 +1,14 @@
-<!doctype html>
-<html lang="pt">
-
-<head>
-  <%- include('../layout/head'); %>
-</head>
-
-<body>
-  <div class="container">
-    <header>
-      <%- include('../layout/header'); %>
-    </header>
-    <% if (items.length> 0) { %>
-      <div class="row">
-        <% for(var i=0; i < items.length; i++) {%>
-          <div class="col-md-12 jumbotron">
-            <h4>
-              <%= items[i].name %>
-            </h4>
-            <p>
-              <%= items[i].sku %>
-            </p>
-          </div>
-          <% } %>
+<% if (items.length> 0) { %>
+  <div class="row">
+    <% for(var i=0; i < items.length; i++) {%>
+      <div class="col-md-12 jumbotron">
+        <h4>
+          <%= items[i].name %>
+        </h4>
+        <p>
+          <%= items[i].sku %>
+        </p>
       </div>
       <% } %>
   </div>
-  <footer>
-    <%- include('../layout/footer'); %>
-  </footer>
-</body>
-
-</html>
+  <% } %>

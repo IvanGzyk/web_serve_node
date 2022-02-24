@@ -2,11 +2,13 @@
 const bodyParser = require('body-parser')
 const express = require('express')
 const consign = require('consign')
+var ejsLayouts = require("express-ejs-layouts");
 
 const app = express();
 app.use(express.static('./public'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(ejsLayouts)
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 

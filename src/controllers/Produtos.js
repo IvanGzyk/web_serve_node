@@ -35,7 +35,7 @@ async function atributos(para) {
         atrib = await prod_mag.GetProdutosAtributos(para)
         return funcoes.atributo(atrib)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -55,7 +55,7 @@ async function cadastraAtributo(attribute_id, fornecedor) {
         }`
         await prod_mag.putProdutosAtributos(attribute_id, jsonAtribute)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -64,7 +64,7 @@ async function pegaProduto(sku) {
         dados = await prod_mag.getProduto(sku)
         return funcoes.pegaProduto(dados)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -73,7 +73,7 @@ async function cadastraProduto(params) {
         dados = await prod_mag.postProduto(params)
         return funcoes.retornaData(dados)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -83,7 +83,7 @@ async function cadastraProdutoConfiguravel(sku, option) {
             dados = await prod_mag.ProdutoConfigurableOptions(sku, option)
         }
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -92,166 +92,156 @@ async function atualizaProduto(sku, params) {
         dados = await prod_mag.putProduto(sku, params)
         return funcoes.retornaData(dados)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
 async function VinculaSimplesConfiguravel(element, sku) {
     try {
-        await prod_mag.addProdutoSimple(element.product_code, `{"childSku": "${sku}"}`)
+        prod_mag.addProdutoSimple(element.product_code, `{"childSku": "${sku}"}`);
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
 }
 
-async function CadastraSimples(items, element, json, sku) {
+function CadastraSimples(items, element, json, sku) {
     try {
         if (items.length != 0) {
             try {
-                await atualizaProduto(sku, json).then(data => {
-                    let dados = data.data
-                    let img = dados.media_gallery_entries
-                    var img_local = element.img
-                    img_local = img_local.replace('"media_gallery_entries":', '')
-                    img_local = JSON.parse(img_local)
-                    const img_json = funcoes.salva_id_img(img_local, img)
-                    ProdutoModel.putImg(element.id, img_json)
-                    VinculaSimplesConfiguravel(element, sku)
-                        (async () => {
-                            await ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
-                        })()
+                atualizaProduto(sku, json).then(data => {
+                    let dados = data.data;
+                    let img = dados.media_gallery_entries;
+                    var img_local = element.img;
+                    img_local = img_local.replace('"media_gallery_entries":', '');
+                    img_local = JSON.parse(img_local);
+                    const img_json = funcoes.salva_id_img(img_local, img);
+                    ProdutoModel.putImg(element.id, img_json);
+                    VinculaSimplesConfiguravel(element, sku).then(data => {
+                        ProdutoModel.atualizaValorProdLoja(dados.price, element.id);
+                    })
                 })
             } catch (error) {
-                console.log("Produto não encontrado! " + error)
+                console.error(error);
             }
         } else if (element.active != 'N') {
-            console.log('cadastra')
             try {
-                await cadastraProduto(json).then(data => {
-                    let dados = data.data
-                    let img = dados.media_gallery_entries
-                    var img_local = element.img
-                    img_local = img_local.replace('"media_gallery_entries":', '')
-                    img_local = JSON.parse(img_local)
-                    const img_json = funcoes.salva_id_img(img_local, img)
-                    ProdutoModel.putImg(element.id, img_json)
-                    VinculaSimplesConfiguravel(element, sku)
-                        (async () => {
-                            await ProdutoModel.atualizaValorProdLoja(dados.price, element.id)
-                        })()
+                cadastraProduto(json).then(data => {
+                    let dados = data.data;
+                    let img = dados.media_gallery_entries;
+                    var img_local = element.img;
+                    img_local = img_local.replace('"media_gallery_entries":', '');
+                    img_local = JSON.parse(img_local);
+                    const img_json = funcoes.salva_id_img(img_local, img);
+                    ProdutoModel.putImg(element.id, img_json);
+                    VinculaSimplesConfiguravel(element, sku).then(data => {
+                        ProdutoModel.atualizaValorProdLoja(dados.price, element.id);
+                    })
                 })
             } catch (error) {
-                console.log("Produto não encontrado!")
+                console.error(error);
             }
         }
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
 }
 
-async function PegaProdutaCode(element, json, sku) {
+function PegaProdutaCode(element, json, sku) {
     try {
-        await pegaProduto(element.product_code).then(items => {
-            (async () => {
-                await CadastraSimples(items, element, json, sku)
-            })()
+        pegaProduto(element.product_code).then(items => {
+            CadastraSimples(items, element, json, sku);
         })
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
 }
 
-async function CadastraOpcoesConfiguravel(element, options, json, sku) {
+function CadastraOpcoesConfiguravel(element, options, json, sku) {
     try {
-        await cadastraProdutoConfiguravel(element.product_code, options)
-        await PegaProdutaCode(element, json, sku)
+        cadastraProdutoConfiguravel(element.product_code, options).then(dados => {
+            PegaProdutaCode(element, json, sku);
+        })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
-async function CadastraConfiguravel(json_configurable, element, options, json, sku) {
+function CadastraConfiguravel(json_configurable, element, options, json, sku) {
     try {
         if (json_configurable != undefined) {
             try {
-                await cadastraProduto(json_configurable).then(dados => {
-                    (async () => {
-                        await CadastraOpcoesConfiguravel(element, options, json, sku)
-                    })()
+                cadastraProduto(json_configurable).then(dados => {
+                    CadastraOpcoesConfiguravel(element, options, json, sku);
                 })
             } catch (error) {
-                console.log(error)
+                console.error(error);
             }
         } else {
-            (async () => {
-                await CadastraOpcoesConfiguravel(element, options, json, sku)
-            })()
+            CadastraOpcoesConfiguravel(element, options, json, sku);
         }
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
 }
 
-async function JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id) {
+function JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id) {
     try {
-        await pegaProduto(element.product_code).then(data => {
-            var json_configurable
-            var options
+        pegaProduto(element.product_code).then(data => {
+            var json_configurable;
+            var options;
             if (data.length == 0) {
                 json_configurable = `{
-            "product":
-                {
-                    "sku": "${element.product_code}",
-                    "name": "${name}-${id_d009}",
-                    "attribute_set_id": ${atributo_set_id},
-                    "status": 1,
-                    "visibility": 4,
-                    "type_id": "configurable",
-                    "extension_attributes": {
-                        ${category},
-                        "stock_item":{
-                            "qty":${qty},
-                            "is_in_stock":true
-                        }
-                    },
-                    ${img_configuravel},
-                    "custom_attributes": [
+                    "product":
                         {
-                            "attribute_code": "description",
-                            "value": "Colocar aqui a descrição do produto..."
-                        },
-                        {
-                            "attribute_code": "id_d009",
-                            "value": "${id_d009}"
+                            "sku": "${element.product_code}",
+                            "name": "${name}-${id_d009}",
+                            "attribute_set_id": ${atributo_set_id},
+                            "status": 1,
+                            "visibility": 4,
+                            "type_id": "configurable",
+                            "extension_attributes": {
+                                ${category},
+                                "stock_item":{
+                                    "qty":${qty},
+                                    "is_in_stock":true
+                                }
+                            },
+                            ${img_configuravel},
+                            "custom_attributes": [
+                                {
+                                    "attribute_code": "description",
+                                    "value": "Colocar aqui a descrição do produto..."
+                                },
+                                {
+                                    "attribute_code": "id_d009",
+                                    "value": "${id_d009}"
+                                }
+                            ]
                         }
-                    ]
-                }
-            }`
+                    }`;
                 options = `{
-            "sku": "${element.product_code}",
-                "option": {
-                "attribute_id": "${attribute_id}",
-                "label": "fornecedor",
-                "position": 0,
-                "is_use_default": true,
-                "values": [
-                        {
-                            "value_index": ${value_index}
+                    "sku": "${element.product_code}",
+                        "option": {
+                        "attribute_id": "${attribute_id}",
+                        "label": "fornecedor",
+                        "position": 0,
+                        "is_use_default": true,
+                        "values": [
+                                {
+                                    "value_index": ${value_index}
+                                }
+                            ]
                         }
-                    ]
-                }
-            }`
-            }
-            (async () => {
-                await CadastraConfiguravel(json_configurable, element, options, json, sku)
-            })()
+                    }`;
+            };
+            CadastraConfiguravel(json_configurable, element, options, json, sku);
         })
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
 }
 
-async function GeraraAtributo(element) {
+function GeraraAtributo(element) {
 
     let para = {
         $or: [{ "attribute_code": "fornecedor" }],
@@ -265,7 +255,7 @@ async function GeraraAtributo(element) {
         $page: 1
     }
     try {
-        await atributos(para).then(atrib => {
+        atributos(para).then(atrib => {
             var forn = element.fornecedor.split(" - ")
             fornecedor = forn[0].split(" ")
             fornecedor = fornecedor[0]
@@ -274,135 +264,182 @@ async function GeraraAtributo(element) {
                 fornecedor = fornecedor + ' ' + trade[0]
             }
 
-            attribute_id = atrib.attribute_id
-            options = atrib.options
-            options.forEach(opt => {
-                if (opt.label == fornecedor) {
-                    atribFornece = true
+            attribute_id = atrib.attribute_id;
+            options = atrib.options;
+            (async () => {
+                options.forEach(opt => {
+                    if (opt.label == fornecedor) {
+                        atribFornece = true;
+                    }
+                });
+            })().then(dados => {
+                if (atribFornece == false) {
+                    cadastraAtributo(attribute_id, fornecedor).then(dados => {
+                        Simples();
+                    });
+                } else {
+                    Simples();
                 }
             })
-            if (atribFornece == false) {
-                (async () => {
-                    await cadastraAtributo(attribute_id, fornecedor)
-                })()
-            }
         })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
-    try {
-        await atributos(para).then(atrib => {
-            var forn = element.fornecedor.split(" - ")
-            fornecedor = forn[0].split(" ")
-            fornecedor = fornecedor[0]
-            if (forn.length == 2) {
-                trade = forn[1].split(" ")
-                fornecedor = fornecedor + ' ' + trade[0]
-            }
-            attribute_id = atrib.attribute_id
-            options = atrib.options
-            options.forEach(opt => {
-                if (opt.label == fornecedor) {
-                    value_index = opt.value
+    function Simples() {
+        try {
+            atributos(para).then(atrib => {
+                var forn = element.fornecedor.split(" - ")
+                fornecedor = forn[0].split(" ")
+                fornecedor = fornecedor[0]
+                if (forn.length == 2) {
+                    trade = forn[1].split(" ")
+                    fornecedor = fornecedor + ' ' + trade[0]
                 }
-            })
-            id_d001 = element.product_code
-            id_d009 = element.hrd_D009_Id
-            id_d049 = element.D049Id
-            sku = element.product_code + '-' + element.hrd_D009_Id
-            name = element.nome
-            price = element.price_unit
-            qty = element.actual_quantity
-            category = element.categories_id
-            ativo = 0
-            atribu.pegaAtributoSet(fornecedor_set).then(item => {
-                if (item.length != 0) {
-                    var atributo_set_id = item[0].attribute_set_id
-                    if (element.active == 'N') {
-                        json = `
+                attribute_id = atrib.attribute_id
+                options = atrib.options
+                options.forEach(opt => {
+                    if (opt.label == fornecedor) {
+                        value_index = opt.value
+                    }
+                })
+                id_d001 = element.product_code
+                id_d009 = element.hrd_D009_Id
+                id_d049 = element.D049Id
+                sku = element.product_code + '-' + element.hrd_D009_Id
+                name = element.nome
+                price = element.price_unit
+                qty = element.actual_quantity
+                category = element.categories_id
+                ativo = 0
+                atribu.pegaAtributoSet(fornecedor_set).then(item => {
+                    if (item.length != 0) {
+                        var atributo_set_id = item[0].attribute_set_id
+                        if (element.active == 'N') {
+                            json = `
+                                {
+                                    "product": {
+                                        "status":${ativo}
+                                    }
+                                }`
+                        } else {
+                            ativo = 1
+                            img = element.img
+                            img_configuravel = element.img_configuravel
+
+                            json = `
                             {
-                                "product": {
-                                    "status":${ativo}
+                                "product":{
+                                    "sku":"${sku}",
+                                    "name":"${name}-${sku}",
+                                    "attribute_set_id": ${atributo_set_id},
+                                    "price":${price},
+                                    "status":${ativo},
+                                    "visibility": 1,
+                                    "type_id":"simple",
+                                    "weight": "${element.peso_uni_kg}",
+                                    "extension_attributes":{
+                                        ${category},
+                                        "stock_item":{
+                                            "qty":${qty},
+                                            "is_in_stock":true
+                                        }
+                                    },
+                                    ${img},
+                                    "custom_attributes": [
+                                        {
+                                            "attribute_code": "description",
+                                            "value": "Colocar aqui a descrição do produto..."
+                                        },
+                                        {
+                                            "attribute_code": "id_d009",
+                                            "value": "${id_d009}"
+                                        },
+                                        {
+                                            "attribute_code": "d001_id",
+                                            "value": "${id_d001}"
+                                        },
+                                        {
+                                            "attribute_code": "d049_id",
+                                            "value": "${id_d049}"
+                                        },
+                                        {
+                                            "attribute_code": "fornecedor",
+                                            "value": "${value_index}"
+                                        }
+                                    ]
                                 }
                             }`
-                    } else {
-                        ativo = 1
-                        img = element.img
-                        img_configuravel = element.img_configuravel
-
-                        json = `
-                        {
-                            "product":{
-                                "sku":"${sku}",
-                                "name":"${name}-${sku}",
-                                "attribute_set_id": ${atributo_set_id},
-                                "price":${price},
-                                "status":${ativo},
-                                "visibility": 1,
-                                "type_id":"simple",
-                                "weight": "${element.peso_uni_kg}",
-                                "extension_attributes":{
-                                    ${category},
-                                    "stock_item":{
-                                        "qty":${qty},
-                                        "is_in_stock":true
-                                    }
-                                },
-                                ${img},
-                                "custom_attributes": [
-                                    {
-                                        "attribute_code": "description",
-                                        "value": "Colocar aqui a descrição do produto..."
-                                    },
-                                    {
-                                        "attribute_code": "id_d009",
-                                        "value": "${id_d009}"
-                                    },
-                                    {
-                                        "attribute_code": "d001_id",
-                                        "value": "${id_d001}"
-                                    },
-                                    {
-                                        "attribute_code": "d049_id",
-                                        "value": "${id_d049}"
-                                    },
-                                    {
-                                        "attribute_code": "fornecedor",
-                                        "value": "${value_index}"
-                                    }
-                                ]
-                            }
-                        }`
+                        };
+                        JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id);
                     }
-                    (async () => {
-                        await JsonConfiguravel(element, name, id_d009, category, qty, img_configuravel, attribute_id, value_index, json, sku, atributo_set_id)
-                    })()
-                }
+                })
             })
-        })
-    } catch (error) {
-        console.log(error)
+        } catch (error) {
+            console.error(error)
+        }
     }
 }
 
-const produtos = async function (application, req, res) {
+const atualiza_mage = function (req, res) {
+    try {
+        bd.query('SELECT * FROM product', function (err, rows, fields) {
+            rows.forEach(element => {
+                if (element.active == 'S') {
+                    GeraraAtributo(element)
+                }
+            })
+            res.render("produtos/produtos", {
+                msg: "Produto atualzado na Loja!!!",
+                produtos: rows
+            })
+        })
+    } catch (error) {
+        HTMLFormControlsCollection(error)
+    }
+}
+
+const cad_prod_unic = function (req, res) {
+    let params = req.params
+    try {
+        bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
+            rows.forEach(element => {
+                GeraraAtributo(element)
+            })
+        })
+    } catch (error) {
+        console.error(error)
+    }
+    try {
+        bd.query('SELECT * FROM product', function (err, rows, fields) {
+            res.render("produtos/produtos", {
+                msg: "Produto atualzado na Loja!!!",
+                produtos: rows
+            })
+        })
+    } catch (error) {
+        console.error(error)
+    }
+
+}
+
+const produtos = function (application, req, res) {
     try {
         ProdutoModel.getProduto(res)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
-const novo = async function (req, res) {
+const novo = function (req, res) {
 
     try {
-        await Categorias.getCategorias()
+        Categorias.getCategorias()
             .then(dados => dados.data)
             .then(dados => {
                 res.render("form/cadastro_produto", { categorias: dados.children_data })
             })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -495,7 +532,7 @@ const form_atualiza = function (req, res) {
                     res.render("form/atualizar", { produtos: rows, categorias: dados.children_data })
                 })
             } catch (error) {
-                console.log(error)
+                console.error(error)
             }
         })
 }
@@ -516,7 +553,6 @@ const atualiza = function (req, res) {
 
     if (imagems) {
         imagems.imagem.forEach(element => {
-            console.log(element)
             var base64str = this.base64_encode(element.path)
             img_princi = `
                 "media_gallery_entries": [{
@@ -601,53 +637,6 @@ const apagar = function (req, res) {
     let params = req.params
     ProdutoModel.deleteProduto(params.id)
     ProdutoModel.getProduto(res, "Produto Deletado!")
-}
-
-const atualiza_mage = function (req, res) {
-    try {
-        bd.query('SELECT * FROM product', function (err, rows, fields) {
-            rows.forEach(element => {
-                if (element.active == 'S') {
-                    (async () => {
-                        await GeraraAtributo(element)
-                    })()
-                }
-            })
-            res.render("produtos/produtos", {
-                msg: "Produto atualzado na Loja!!!",
-                produtos: rows
-            })
-        })
-    } catch (error) {
-        HTMLFormControlsCollection(error)
-    }
-}
-
-const cad_prod_unic = function (req, res) {
-    let params = req.params
-    try {
-        bd.query('SELECT * FROM product WHERE hrd_D009_Id = "' + params.D009_Id + '"', function (err, rows, fields) {
-
-            rows.forEach(element => {
-                (async () => {
-                    await GeraraAtributo(element)
-                })()
-            })
-        })
-    } catch (error) {
-        console.log(error)
-    }
-    try {
-        bd.query('SELECT * FROM product', function (err, rows, fields) {
-            res.render("produtos/produtos", {
-                msg: "Produto atualzado na Loja!!!",
-                produtos: rows
-            })
-        })
-    } catch (error) {
-        console.log(error)
-    }
-
 }
 
 const atualiza_base = function (req, res) {

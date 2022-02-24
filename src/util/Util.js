@@ -86,7 +86,6 @@ class Util {
     }
 
     atributo(atri){
-        //console.log(atri.data.items)
         var attribute
         var atributo = atri.data.items
         atributo.forEach(atrib => {
@@ -106,7 +105,6 @@ class Util {
     }
     
     retornaData(dados){
-        //console.log(dados)
         return dados
     }
 }
